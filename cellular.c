@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h> 
 #include "cellular.h"
+
 
 /** ## FUNCTION IMPLEMENTATIONS ## */
 
@@ -32,12 +34,13 @@ void cellularAutomation (Cell *array)
 Prints the generation to the screen/terminal.
 @param *array - pointer to the array of the generation to print
 */
-void displayGeneration(Cell *array, int length)
+void displayGeneration(Cell *array)
 {   
-    for(int i=0; i<length); i++)
+    for(int i=1; i<9; i++)
     {
-        printf(" %d ", array->state);
+        printf(" %d ", array[i].state);
     }
+
 }
 
 /**
@@ -53,12 +56,21 @@ int fillGeneration (Cell *array, int rule)
     if(array == NULL) return INVALID_INPUT_PARAMETER;
     if(rule < 1 || rule > 256) return INVALID_INPUT_PARAMETER;
 
-    //Converts the rule into binary
-    char binaryRule[] = sprintf(str, "%lld",converToBinary(rule));
+    //Retains the binary expression of the rule
+    long long binaryRuleNumber = convertToBinary(rule);
 
-    for(int i=0; i<strlen(binaryRule); i++)
+    //Converts the rule numbers into an array of digits for easier comparison
+    int rulePattern[9];
+
+    for (int i=9; i>=1; i--)
     {
-        array[i]->state = binaryRule[i];
+        rulePattern[i] = binaryRuleNumber % 10;
+        binaryRuleNumber = binaryRuleNumber/ 10;
+    }
+
+    for(int i=1; i<9; i++)
+    {
+        array[i].state = rulePattern[i];
     }
 
 
@@ -72,13 +84,26 @@ Calculates the next generation of cells by examining the neighbours.
 @param *array - pointer to the array of the generation
 @param rule - rule to calculate by
 */
-int calculateNextGeneration (Cell *array, int rule)
+int calculateNextGeneration (Cell *array, Rules *rules)
 {
     if (array == NULL) return INVALID_INPUT_PARAMETER;
-    if (rule < 1 || rule > 256) return INVALID_INPUT_PARAMETER;
 
+    char binaryPattern [3];
+    
+    for (int i=1; i<9; i++)
+    {
+        binaryPattern[0] = array[i-1].prevState;
+        binaryPattern[1] = array[i].prevState;
+        binaryPattern[2] = array[i+1].prevState;
+
+        //process the states by rules..
+        
+    }
+
+    return SUCCESS;
 
 }
+
 
 
 /**
@@ -96,10 +121,10 @@ Rules* generateRuleValues(int rule)
 
     //Default size of the ruleset will always be 8.
     r->size = 8;
-    r->ruleset = (Pattern**)malloc(sizeof(Pattern*)*size);
+    r->ruleset = (Pattern**)malloc(sizeof(Pattern*)*8);
 
     //Retains the binary expression of the rule
-    longlong binaryRuleNumber = converToBinary(rule);
+    long long binaryRuleNumber = convertToBinary(rule);
 
     //Converts the rule numbers into an array of digits for easier comparison
     int rulePattern[8];
@@ -112,15 +137,17 @@ Rules* generateRuleValues(int rule)
 
     int defaultPatterns[] = {111, 110, 101, 100, 011, 010, 001, 000};
 
-    for(i=0;i<size;i++)
+    for(int i=0; i<r->size;i++)
     {
         r->ruleset[i]->binaryPattern = defaultPatterns[i];
-        r->ruleset[i]->correspondingValue = rulePattern[i];
+        r->ruleset[i]->correspondingVal = rulePattern[i];
     }
 
 
     return r;
 }
+
+
 
 
 /**
@@ -148,7 +175,7 @@ Saves the current generation of cells to a file.
 @param *array - pointer to the generation to be saved
 @param *f - file to be written to
 */
-void saveGenerationToFile (Cell *array, File *f)
+void saveGenerationToFile (Cell *array)
 {
 
 }

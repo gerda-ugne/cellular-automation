@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include "cellular.c"
 
+void displayMenu();
+void processUserChoices();
+int selectGenerationRule();
 
 int main()
 {

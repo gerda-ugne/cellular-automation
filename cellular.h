@@ -1,3 +1,4 @@
+#include <stdio.h>
 #ifndef __CELL_HEADER__
 #define __CELL_HEADER__ 
 
@@ -64,13 +65,13 @@ void cellularAutomation (Cell *array);
 void displayGeneration(Cell *array);
 
 /** Fills the first generation according to the rule*/
-void fillGeneration (Cell *array, int rule);
+int fillGeneration (Cell *array, int rule);
 
 /** Calculates the next generation based on neighbours*/
-void calculateNextGeneration (Cell *array, int rule);
+int calculateNextGeneration (Cell *array, Rules* rules);
 
 /**Generates the corresponding values for the rule*/
-int generateRuleValues(int rule);
+Rules* generateRuleValues(int rule);
 
 /** Allows to choose the generation rule*/
 int selectGenerationRule ();
@@ -82,7 +83,7 @@ long long convertToBinary(int number);
 int convertToDecimal(long long number);
 
 /** Saves the current generation to a file*/
-void saveGenerationToFile (Cell *array, File *f);
+void saveGenerationToFile (Cell *array);
 
 
 #endif
