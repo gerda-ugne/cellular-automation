@@ -6,15 +6,7 @@
 
 
 /**
-Allocates the space for Cell
-*/
-Cell *createCell ()
-{
-    return null;
-}
-
-/**
-Initializes the default cell values.
+Allocates the space and initializes the default cell values.
 */
 Cell *intializeCell()
 {
