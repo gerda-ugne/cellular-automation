@@ -29,10 +29,10 @@ Initializes the array of cells
 Cell **initializeArray()
 {
     Cell **p = (Cell**)malloc(sizeof(Cell*)*8);
-    Cell *cell = initializeCell();
 
     for (int i=0; i<8; i++)
     {
+        Cell *cell = initializeCell();
         p[i] = cell;
     }
 
