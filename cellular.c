@@ -8,7 +8,7 @@
 
 
 /**
-Allocates the space for Cell
+Allocates the space for the cell and initializes its values.
 */
 Cell *intializeCell ()
 {
