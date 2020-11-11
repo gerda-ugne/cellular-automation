@@ -12,6 +12,7 @@
 #define MEMORY_ALLOCATION_ERROR  102   // Value to be returned if a memory allocation error occurs during the function
 #define INVALID_OPERATION  103         // Value to be returned if your function detects an operation that is being
                                        // attempted on data structure that isn't valid.
+#define ERROR 102                      // General error that does not fit in with the rest of criteria.
 
 /**
 Structure of the Cell
@@ -26,6 +27,26 @@ typedef struct cell{
     int prevState;
     int neighbours;
 } Cell;
+
+/**
+Information to hold the information of each pattern:
+111 	110 	101 	100 	011 	010 	001 	000 
+to match the required roles
+
+*/
+typedef struct pattern{
+    int binaryPattern;
+    int correspondingVal;
+    struct pattern *next;
+} Pattern;
+
+/**
+Hashtable to contain all the patterns, which defines a set of rules
+*/
+typedef struct rules{
+    int size;
+    struct pattern **ruleset;
+} Rules;
 
 
 /**
@@ -47,6 +68,9 @@ void fillGeneration (Cell *array, int rule);
 
 /** Calculates the next generation based on neighbours*/
 void calculateNextGeneration (Cell *array, int rule);
+
+/**Generates the corresponding values for the rule*/
+int generateRuleValues(int rule);
 
 /** Allows to choose the generation rule*/
 int selectGenerationRule ();

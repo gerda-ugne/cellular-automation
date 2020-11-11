@@ -24,3 +24,11 @@ void processUserChoices()
 {
     
 }
+
+/**
+Selects the generation rule
+*/
+int selectGenerationRule ()
+{
+    return 0;
+}

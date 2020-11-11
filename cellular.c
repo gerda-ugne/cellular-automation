@@ -8,17 +8,16 @@
 /**
 Allocates the space for Cell
 */
-Cell *createCell ()
+Cell *intializeCell ()
 {
-    return null;
-}
+    Cell* cell = (Cell*)malloc(sizeof(Cell));
+    if (cell == NULL) return NULL;
 
-/**
-Initializes the default cell values.
-*/
-Cell *intializeCell()
-{
-    return null;
+    cell->state = 0;
+    cell->prevState = -1;
+    cell->neighbours = -1;
+
+    return cell;
 }
 
 /**
@@ -33,9 +32,12 @@ void cellularAutomation (Cell *array)
 Prints the generation to the screen/terminal.
 @param *array - pointer to the array of the generation to print
 */
-void displayGeneration(Cell *array)
-{
-
+void displayGeneration(Cell *array, int length)
+{   
+    for(int i=0; i<length); i++)
+    {
+        printf(" %d ", array->state);
+    }
 }
 
 /**
@@ -46,8 +48,21 @@ bsaed on the provided rule.
 @param rule - rule to use for the filling of the generation
 
 */
-void fillGeneration (Cell *array, int rule)
+int fillGeneration (Cell *array, int rule)
 {
+    if(array == NULL) return INVALID_INPUT_PARAMETER;
+    if(rule < 1 || rule > 256) return INVALID_INPUT_PARAMETER;
+
+    //Converts the rule into binary
+    char binaryRule[] = sprintf(str, "%lld",converToBinary(rule));
+
+    for(int i=0; i<strlen(binaryRule); i++)
+    {
+        array[i]->state = binaryRule[i];
+    }
+
+
+    return SUCCESS;
 
 }
 
@@ -57,22 +72,56 @@ Calculates the next generation of cells by examining the neighbours.
 @param *array - pointer to the array of the generation
 @param rule - rule to calculate by
 */
-void calculateNextGeneration (Cell *array, int rule)
+int calculateNextGeneration (Cell *array, int rule)
 {
+    if (array == NULL) return INVALID_INPUT_PARAMETER;
+    if (rule < 1 || rule > 256) return INVALID_INPUT_PARAMETER;
+
 
 }
+
 
 /**
-Allows user to choose a rule for the 
-cellular automation (1-255).
+Generates the rule values and returns them.
+Each number of 111  	110 	101 	100 	011 	010 	001 	000 
+is paired with each integer form the converted binary number of the rule.
 
-return int - returns the chosen rule
 
 */
-int selectGenerationRule ()
+
+Rules* generateRuleValues(int rule)
 {
-    return 0;
+    Rules *r = (Rules*)malloc(sizeof(Rules));
+    if (r==NULL) return NULL;
+
+    //Default size of the ruleset will always be 8.
+    r->size = 8;
+    r->ruleset = (Pattern**)malloc(sizeof(Pattern*)*size);
+
+    //Retains the binary expression of the rule
+    longlong binaryRuleNumber = converToBinary(rule);
+
+    //Converts the rule numbers into an array of digits for easier comparison
+    int rulePattern[8];
+
+    for (int i=8; i>=0; i--)
+    {
+        rulePattern[i] = binaryRuleNumber % 10;
+        binaryRuleNumber = binaryRuleNumber/ 10;
+    }
+
+    int defaultPatterns[] = {111, 110, 101, 100, 011, 010, 001, 000};
+
+    for(i=0;i<size;i++)
+    {
+        r->ruleset[i]->binaryPattern = defaultPatterns[i];
+        r->ruleset[i]->correspondingValue = rulePattern[i];
+    }
+
+
+    return r;
 }
+
 
 /**
 Converts a decimal number into binary and returnts it.
