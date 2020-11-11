@@ -28,12 +28,7 @@ typedef struct cell{
 } Cell;
 
 
-/**
-Allocates the memory for the cell 
-*/
-Cell *createCell();
-
-/** Initializes the default values of the cell */
+/** Allocates the memory and initializes the default values of the cell */
 Cell *intializeCell();
 
 /** Completes 1D cellular automation*/
