@@ -51,7 +51,9 @@ typedef struct rules{
 
 
 /** Allocates the memory and initializes the default values of the cell */
-Cell *intializeCell();
+Cell *initializeCell();
+
+Cell *intializeArray();
 
 /** Completes 1D cellular automation*/
 void cellularAutomation (Cell *array);
@@ -79,6 +81,7 @@ int convertToDecimal(long long number);
 
 /** Saves the current generation to a file*/
 void saveGenerationToFile (Cell *array);
+
 
 
 #endif

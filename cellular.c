@@ -10,7 +10,7 @@
 /**
 Allocates the space for the cell and initializes its values.
 */
-Cell *intializeCell ()
+Cell *initializeCell()
 {
     Cell* cell = (Cell*)malloc(sizeof(Cell));
     if (cell == NULL) return NULL;
@@ -20,6 +20,23 @@ Cell *intializeCell ()
     cell->neighbours = -1;
 
     return cell;
+}
+
+
+/**
+Initializes the array of cells
+*/
+Cell **initializeArray()
+{
+    Cell **p = (Cell**)malloc(sizeof(Cell*)*8);
+    Cell *cell = initializeCell();
+
+    for (int i=0; i<8; i++)
+    {
+        p[i] = cell;
+    }
+
+    return p;
 }
 
 /**

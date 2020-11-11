@@ -8,6 +8,9 @@ int selectGenerationRule();
 
 int main()
 {
+    Cell **cells = initializeArray();
+
+
     processUserChoices();
     return 0;
 }
