@@ -198,7 +198,7 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     if(array == NULL)
         return INVALID_INPUT_PARAMETER;
     
-    if(fileName == NULL || strlen(fileName) > 50)
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
         return INVALID_INPUT_PARAMETER;
         
     FILE *f;
@@ -221,7 +221,7 @@ Loads all generations that forms a pattern from a file and displays it for a use
 */
 int readFromFile(char fileName[])
 {
-    if(fileName == NULL || strlen(fileName) > 50)
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
         return INVALID_INPUT_PARAMETER;
 
     FILE *f;
