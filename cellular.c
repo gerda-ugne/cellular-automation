@@ -25,11 +25,11 @@ Cell *initializeCell()
 /**
 Initializes the array of cells
 */
-Cell **initializeArray()
+Cell **initializeArray(int generationSize)
 {
-    Cell **p = (Cell**)malloc(sizeof(Cell*)*8);
+    Cell **p = (Cell**)malloc(sizeof(Cell*)*generationSize);
 
-    for (int i=0; i<8; i++)
+    for (int i=0; i<generationSize; i++)
     {
         Cell *cell = initializeCell();
         p[i] = cell;
@@ -73,9 +73,9 @@ void cellularAutomation (Cell *array)
 Prints the generation to the screen/terminal.
 @param *array - pointer to the array of the generation to print
 */
-void displayGeneration(Cell *array)
+void displayGeneration(Cell *array, int generationSize)
 {   
-    for(int i=1; i<9; i++)
+    for(int i=1; i<generationSize; i++)
     {
         printf(" %d ", array[i].state);
     }
@@ -231,10 +231,53 @@ int calculateNextGeneration (Cell *array, Rules *rules)
 /**
 Saves the current generation of cells to a file.
 @param *array - pointer to the generation to be saved
-@param *f - file to be written to
+@param generationSize - a size of an array
+@param fileName[] - a file where the output is saved to
 */
-void saveGenerationToFile (Cell *array)
+int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
 {
-    (void)array;
+    if(array == NULL)
+        return INVALID_INPUT_PARAMETER;
+    
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
+        return INVALID_INPUT_PARAMETER;
+        
+    FILE *f;
+    f = fopen(fileName, "a");
+    if(f == NULL)
+        return FILE_ERROR;
+    
+    for(int i =0, i<generationSize; i++)
+    {
+        fprintf(f,"%d ", array[i].state); 
+    }
+    fprintf(f,"\n");
+    fclose(f);
+    return SUCCESS;
+}
+
+/**
+Loads all generations that forms a pattern from a file and displays it for a user
+@param fileName - a name of file to read data from
+*/
+int readFromFile(char fileName[])
+{
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
+        return INVALID_INPUT_PARAMETER;
+
+    FILE *f;
+    f = fopen(fileName, "r")
+    if(f==NULL)
+        return FILE_ERROR; // failed to open a specified file-> probably file with such name does not exit
+    
+    //e.g 256; it should be a max size of a generation that a user can choose
+    char t[256];  
+    while(fgets(t, 256,f) != NULL)
+    {
+        printf("%s",t);
+    }
+
+    fclose(f);
+    return SUCCESS;
 }
 

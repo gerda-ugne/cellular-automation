@@ -12,8 +12,9 @@
 #define MEMORY_ALLOCATION_ERROR  102   // Value to be returned if a memory allocation error occurs during the function
 #define INVALID_OPERATION  103         // Value to be returned if your function detects an operation that is being
                                        // attempted on data structure that isn't valid.
-#define ERROR 104                      // General error that does not fit in with the rest of criteria.
 
+#define ERROR 104                      // General error that does not fit in with the rest of criteria.
+#define FILE_ERROR 105                 // Unable to open a file
 /**
 Structure of the Cell
 
