@@ -13,7 +13,7 @@
 #define MEMORY_ALLOCATION_ERROR  102   // Value to be returned if a memory allocation error occurs during the function
 #define INVALID_OPERATION  103         // Value to be returned if your function detects an operation that is being
                                        // attempted on data structure that isn't valid.
-#define ERROR 102                      // General error that does not fit in with the rest of criteria.
+#define ERROR 104                      // General error that does not fit in with the rest of criteria.
 
 /**
 Structure of the Cell
@@ -46,7 +46,7 @@ Hashtable to contain all the patterns, which defines a set of rules
 */
 typedef struct rules{
     int size;
-    struct pattern **ruleset;
+    Pattern **ruleset;
 } Rules;
 
 
@@ -55,8 +55,11 @@ Cell *initializeCell();
 
 Cell *intializeArray();
 
-/** Completes 1D cellular automation*/
-void cellularAutomation (Cell *array);
+/** Converts a decimal number to binary*/
+long long convertToBinary(int number);
+
+/** Converts a binary number to decimal*/
+int convertToDecimal(long long number);
 
 /** Displays the current generation to screen*/
 void displayGeneration(Cell *array);
@@ -70,17 +73,17 @@ int calculateNextGeneration (Cell *array, Rules* rules);
 /**Generates the corresponding values for the rule*/
 Rules* generateRuleValues(int rule);
 
-/** Allows to choose the generation rule*/
-int selectGenerationRule ();
+/** Returns hashcode for the key parameter*/
+int hashCode(Rules *r, int value);
 
-/** Converts a decimal number to binary*/
-long long convertToBinary(int number);
-
-/** Converts a binary number to decimal*/
-int convertToDecimal(long long number);
+/** Returns values for the key parameter*/
+int findValue(Rules *r, int value);
 
 /** Saves the current generation to a file*/
 void saveGenerationToFile (Cell *array);
+
+/** Completes 1D cellular automation*/
+void cellularAutomation (Cell *array);
 
 
 

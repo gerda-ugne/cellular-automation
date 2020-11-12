@@ -39,12 +39,35 @@ Cell **initializeArray()
     return p;
 }
 
+
+/**
+Converts a decimal number into binary and returnts it.
+param @int - number to be converted
+@return - binary number
+*/
+long long convertToBinary(int number)
+{
+    (void)number;
+    return 0;
+}
+
+/**
+Converts a binary number into decimal and returnts it.
+param @long long - number to be converted
+@return - decimal number
+*/
+int convertToDecimal(long long number)
+{
+    (void)number;
+    return 0;
+}
+
 /**
 Method which performs the cellular automation.
 */
 void cellularAutomation (Cell *array)
 {
-
+    (void)array;
 }
 
 /**
@@ -105,15 +128,22 @@ int calculateNextGeneration (Cell *array, Rules *rules)
 {
     if (array == NULL) return INVALID_INPUT_PARAMETER;
 
-    char binaryPattern [3];
-    
+    int binaryPattern [3];
+    int binaryPatternAsInt = 0;
+    char newState;
+
     for (int i=1; i<9; i++)
     {
         binaryPattern[0] = array[i-1].prevState;
         binaryPattern[1] = array[i].prevState;
         binaryPattern[2] = array[i+1].prevState;
+        
+        
+        binaryPatternAsInt = binaryPattern[0]*100 + binaryPattern[1]*10+binaryPattern[2];
 
-        //process the states by rules..
+        newState = hashCode(rules, binaryPatternAsInt);
+        if(newState == -1) return ERROR;
+        array[i].state = newState;
         
     }
 
@@ -121,6 +151,37 @@ int calculateNextGeneration (Cell *array, Rules *rules)
 
 }
 
+/**
+Returns key value for the matched rule pattern.
+@param Rules *r - pointer to a hashtable of chosen rules
+@param char[] value - value to be looked up
+
+@return 0 or 1 depending on the pairing of the rule
+*/
+int findValue(Rules *r, int value)
+{
+
+    int pos = hashCode(r,value);
+
+    Pattern *ruleset = r->ruleset[pos];
+    Pattern *temp = ruleset;
+
+    while(temp)
+    {
+
+    if(temp->binaryPattern == value) return temp->correspondingVal;
+    temp = temp->next;
+    
+    }
+
+    return -1;
+
+}
+
+int hashCode(Rules *r, int value)
+{
+    return value%r->size;
+}
 
 
 /**
@@ -154,7 +215,7 @@ Rules* generateRuleValues(int rule)
 
     int defaultPatterns[] = {111, 110, 101, 100, 011, 010, 001, 000};
 
-    for(int i=0; i<r->size;i++)
+    for(int i=0; i< r->size ;i++)
     {
         r->ruleset[i]->binaryPattern = defaultPatterns[i];
         r->ruleset[i]->correspondingVal = rulePattern[i];
@@ -167,25 +228,6 @@ Rules* generateRuleValues(int rule)
 
 
 
-/**
-Converts a decimal number into binary and returnts it.
-param @int - number to be converted
-@return - binary number
-*/
-long long convertToBinary(int number)
-{
-    return 0;
-}
-
-/**
-Converts a binary number into decimal and returnts it.
-param @long long - number to be converted
-@return - decimal number
-*/
-int convertToDecimal(long long number)
-{
-    return 0;
-}
 
 /**
 Saves the current generation of cells to a file.
@@ -194,6 +236,6 @@ Saves the current generation of cells to a file.
 */
 void saveGenerationToFile (Cell *array)
 {
-
+    (void)array;
 }
 
