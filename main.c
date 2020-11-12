@@ -4,7 +4,7 @@
 
 void displayMenu();
 void processUserChoices();
-int selectGenerationRule();
+int  selectGenerationRule();
 
 int main()
 {

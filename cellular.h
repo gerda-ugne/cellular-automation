@@ -1,4 +1,3 @@
-#include <stdio.h>
 #ifndef __CELL_HEADER__
 #define __CELL_HEADER__ 
 
@@ -53,7 +52,7 @@ typedef struct rules{
 /** Allocates the memory and initializes the default values of the cell */
 Cell *initializeCell();
 
-Cell *intializeArray();
+Cell **intializeArray();
 
 /** Converts a decimal number to binary*/
 long long convertToBinary(int number);
@@ -61,17 +60,14 @@ long long convertToBinary(int number);
 /** Converts a binary number to decimal*/
 int convertToDecimal(long long number);
 
+/** Completes 1D cellular automation*/
+void cellularAutomation (Cell *array);
+
 /** Displays the current generation to screen*/
 void displayGeneration(Cell *array);
 
 /** Fills the first generation according to the rule*/
 int fillGeneration (Cell *array, int rule);
-
-/** Calculates the next generation based on neighbours*/
-int calculateNextGeneration (Cell *array, Rules* rules);
-
-/**Generates the corresponding values for the rule*/
-Rules* generateRuleValues(int rule);
 
 /** Returns hashcode for the key parameter*/
 int hashCode(Rules *r, int value);
@@ -79,11 +75,14 @@ int hashCode(Rules *r, int value);
 /** Returns values for the key parameter*/
 int findValue(Rules *r, int value);
 
+/**Generates the corresponding values for the rule*/
+Rules* generateRuleValues(int rule);
+
+/** Calculates the next generation based on neighbours*/
+int calculateNextGeneration (Cell *array, Rules* rules);
+
 /** Saves the current generation to a file*/
 void saveGenerationToFile (Cell *array);
-
-/** Completes 1D cellular automation*/
-void cellularAutomation (Cell *array);
 
 
 

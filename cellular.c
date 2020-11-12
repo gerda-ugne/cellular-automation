@@ -1,8 +1,7 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h> 
+#include <stdio.h>
 #include "cellular.h"
-
 
 /** ## FUNCTION IMPLEMENTATIONS ## */
 
@@ -118,38 +117,11 @@ int fillGeneration (Cell *array, int rule)
 
 }
 
-/**
-Calculates the next generation of cells by examining the neighbours.
-
-@param *array - pointer to the array of the generation
-@param rule - rule to calculate by
-*/
-int calculateNextGeneration (Cell *array, Rules *rules)
+int hashCode(Rules *r, int value)
 {
-    if (array == NULL) return INVALID_INPUT_PARAMETER;
-
-    int binaryPattern [3];
-    int binaryPatternAsInt = 0;
-    char newState;
-
-    for (int i=1; i<9; i++)
-    {
-        binaryPattern[0] = array[i-1].prevState;
-        binaryPattern[1] = array[i].prevState;
-        binaryPattern[2] = array[i+1].prevState;
-        
-        
-        binaryPatternAsInt = binaryPattern[0]*100 + binaryPattern[1]*10+binaryPattern[2];
-
-        newState = hashCode(rules, binaryPatternAsInt);
-        if(newState == -1) return ERROR;
-        array[i].state = newState;
-        
-    }
-
-    return SUCCESS;
-
+    return value%r->size;
 }
+
 
 /**
 Returns key value for the matched rule pattern.
@@ -176,11 +148,6 @@ int findValue(Rules *r, int value)
 
     return -1;
 
-}
-
-int hashCode(Rules *r, int value)
-{
-    return value%r->size;
 }
 
 
@@ -226,6 +193,38 @@ Rules* generateRuleValues(int rule)
 }
 
 
+/**
+Calculates the next generation of cells by examining the neighbours.
+
+@param *array - pointer to the array of the generation
+@param rule - rule to calculate by
+*/
+int calculateNextGeneration (Cell *array, Rules *rules)
+{
+    if (array == NULL) return INVALID_INPUT_PARAMETER;
+
+    int binaryPattern [3];
+    int binaryPatternAsInt = 0;
+    char newState;
+
+    for (int i=1; i<9; i++)
+    {
+        binaryPattern[0] = array[i-1].prevState;
+        binaryPattern[1] = array[i].prevState;
+        binaryPattern[2] = array[i+1].prevState;
+        
+        
+        binaryPatternAsInt = binaryPattern[0]*100 + binaryPattern[1]*10+binaryPattern[2];
+
+        newState = findValue(rules, binaryPatternAsInt);
+        if(newState == -1) return ERROR;
+        array[i].state = newState;
+        
+    }
+
+    return SUCCESS;
+
+}
 
 
 
