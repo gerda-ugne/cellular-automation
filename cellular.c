@@ -26,11 +26,11 @@ Cell *initializeCell()
 /**
 Initializes the array of cells
 */
-Cell **initializeArray()
+Cell **initializeArray(int generationSize)
 {
-    Cell **p = (Cell**)malloc(sizeof(Cell*)*8);
+    Cell **p = (Cell**)malloc(sizeof(Cell*)*generationSize);
 
-    for (int i=0; i<8; i++)
+    for (int i=0; i<generationSize; i++)
     {
         Cell *cell = initializeCell();
         p[i] = cell;
@@ -51,9 +51,9 @@ void cellularAutomation (Cell *array)
 Prints the generation to the screen/terminal.
 @param *array - pointer to the array of the generation to print
 */
-void displayGeneration(Cell *array)
+void displayGeneration(Cell *array, int generationSize)
 {   
-    for(int i=1; i<9; i++)
+    for(int i=1; i<generationSize; i++)
     {
         printf(" %d ", array[i].state);
     }
@@ -190,10 +190,33 @@ int convertToDecimal(long long number)
 /**
 Saves the current generation of cells to a file.
 @param *array - pointer to the generation to be saved
-@param *f - file to be written to
+@param generationSize - a size of an array
+@param fileName[] - a file where the output is saved to
 */
-void saveGenerationToFile (Cell *array)
+int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
 {
+    if(array == NULL)
+        return INVALID_INPUT_PARAMETER;
+    
+    if(strlen(fileName)==NULL || strlen(filename) > 50)
+        return INVALID_INPUT_PARAMETER;
+        
+    FILE *f;
+    f = fopen(fileName, "a");
+    if(f == NULL)
+        return ERROR;
+    
+    char c='\n';
+    for(int i =0, i<generationSize; i++)
+    {
+        fprintf(f,"%d ", array[i].state); 
 
+        //printing a new line after the last array element is displayed
+        if(i+1==generationSize)
+            fputc(c,f);
+    }
+    fclose(f);
+    return SUCCESS;
+    
 }
 
