@@ -2,9 +2,15 @@
 #include <stdlib.h>
 #include "cellular.c"
 
+void displayMenu();
+void processUserChoices();
+int selectGenerationRule();
 
 int main()
 {
+    Cell **cells = initializeArray();
+
+
     processUserChoices();
     return 0;
 }
@@ -23,4 +29,12 @@ Proccesses the input of the user
 void processUserChoices()
 {
     
+}
+
+/**
+Selects the generation rule
+*/
+int selectGenerationRule ()
+{
+    return 0;
 }

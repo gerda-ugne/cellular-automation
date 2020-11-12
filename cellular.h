@@ -1,3 +1,4 @@
+#include <stdio.h>
 #ifndef __CELL_HEADER__
 #define __CELL_HEADER__ 
 
@@ -12,6 +13,7 @@
 #define MEMORY_ALLOCATION_ERROR  102   // Value to be returned if a memory allocation error occurs during the function
 #define INVALID_OPERATION  103         // Value to be returned if your function detects an operation that is being
                                        // attempted on data structure that isn't valid.
+#define ERROR 102                      // General error that does not fit in with the rest of criteria.
 
 /**
 Structure of the Cell
@@ -27,9 +29,31 @@ typedef struct cell{
     int neighbours;
 } Cell;
 
+/**
+Information to hold the information of each pattern:
+111 	110 	101 	100 	011 	010 	001 	000 
+to match the required roles
+
+*/
+typedef struct pattern{
+    int binaryPattern;
+    int correspondingVal;
+    struct pattern *next;
+} Pattern;
+
+/**
+Hashtable to contain all the patterns, which defines a set of rules
+*/
+typedef struct rules{
+    int size;
+    struct pattern **ruleset;
+} Rules;
+
 
 /** Allocates the memory and initializes the default values of the cell */
-Cell *intializeCell();
+Cell *initializeCell();
+
+Cell *intializeArray();
 
 /** Completes 1D cellular automation*/
 void cellularAutomation (Cell *array);
@@ -38,10 +62,13 @@ void cellularAutomation (Cell *array);
 void displayGeneration(Cell *array);
 
 /** Fills the first generation according to the rule*/
-void fillGeneration (Cell *array, int rule);
+int fillGeneration (Cell *array, int rule);
 
 /** Calculates the next generation based on neighbours*/
-void calculateNextGeneration (Cell *array, int rule);
+int calculateNextGeneration (Cell *array, Rules* rules);
+
+/**Generates the corresponding values for the rule*/
+Rules* generateRuleValues(int rule);
 
 /** Allows to choose the generation rule*/
 int selectGenerationRule ();
@@ -53,7 +80,8 @@ long long convertToBinary(int number);
 int convertToDecimal(long long number);
 
 /** Saves the current generation to a file*/
-void saveGenerationToFile (Cell *array, File *f);
+void saveGenerationToFile (Cell *array);
+
 
 
 #endif
