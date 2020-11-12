@@ -53,7 +53,7 @@ typedef struct rules{
 /** Allocates the memory and initializes the default values of the cell */
 Cell *initializeCell();
 
-Cell **intializeArray();
+Cell **intializeArray(int generationSize);
 
 /** Converts a decimal number to binary*/
 long long convertToBinary(int number);
@@ -65,7 +65,7 @@ int convertToDecimal(long long number);
 void cellularAutomation (Cell *array);
 
 /** Displays the current generation to screen*/
-void displayGeneration(Cell *array);
+void displayGeneration(Cell *array, int generationSize);
 
 /** Fills the first generation according to the rule*/
 int fillGeneration (Cell *array, int rule);
@@ -83,8 +83,9 @@ Rules* generateRuleValues(int rule);
 int calculateNextGeneration (Cell *array, Rules* rules);
 
 /** Saves the current generation to a file*/
-void saveGenerationToFile (Cell *array);
+int saveGenerationToFile (Cell *array, int generationSize, char fileName[] );
 
+int readFromFile(char fileName[]);
 
 
 #endif

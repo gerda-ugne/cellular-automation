@@ -239,7 +239,7 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     if(array == NULL)
         return INVALID_INPUT_PARAMETER;
     
-    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(fileName) == 0)
         return INVALID_INPUT_PARAMETER;
         
     FILE *f;
@@ -247,7 +247,7 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     if(f == NULL)
         return FILE_ERROR;
     
-    for(int i =0, i<generationSize; i++)
+    for(int i =0; i<generationSize; i++)
     {
         fprintf(f,"%d ", array[i].state); 
     }
@@ -262,11 +262,12 @@ Loads all generations that forms a pattern from a file and displays it for a use
 */
 int readFromFile(char fileName[])
 {
-    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(fileName) == 0)
         return INVALID_INPUT_PARAMETER;
 
     FILE *f;
-    f = fopen(fileName, "r")
+    f = fopen(fileName, "r");
+
     if(f==NULL)
         return FILE_ERROR; // failed to open a specified file-> probably file with such name does not exit
     
