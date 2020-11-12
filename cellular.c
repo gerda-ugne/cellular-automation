@@ -204,17 +204,13 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     FILE *f;
     f = fopen(fileName, "a");
     if(f == NULL)
-        return ERROR;
+        return FILE_ERROR;
     
-    char c='\n';
     for(int i =0, i<generationSize; i++)
     {
         fprintf(f,"%d ", array[i].state); 
-
-        //printing a new line after the last array element is displayed
-        if(i+1==generationSize)
-            fputc(c,f);
     }
+    fprintf(f,"\n");
     fclose(f);
     return SUCCESS;
 }
@@ -231,7 +227,7 @@ int readFromFile(char fileName[])
     FILE *f;
     f = fopen(fileName, "r")
     if(f==NULL)
-        return ERROR; // failed to open a specified file-> probably file with such name does not exit
+        return FILE_ERROR; // failed to open a specified file-> probably file with such name does not exit
     
     //e.g 256; it should be a max size of a generation that a user can choose
     char t[256];  

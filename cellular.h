@@ -14,7 +14,7 @@
 #define INVALID_OPERATION  103         // Value to be returned if your function detects an operation that is being
                                        // attempted on data structure that isn't valid.
 #define ERROR 102                      // General error that does not fit in with the rest of criteria.
-
+#define FILE_ERROR 104                 // Unable to open a file
 /**
 Structure of the Cell
 
