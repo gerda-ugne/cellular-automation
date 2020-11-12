@@ -198,7 +198,7 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     if(array == NULL)
         return INVALID_INPUT_PARAMETER;
     
-    if(strlen(fileName)==NULL || strlen(filename) > 50)
+    if(fileName == NULL || strlen(fileName) > 50)
         return INVALID_INPUT_PARAMETER;
         
     FILE *f;
@@ -217,6 +217,30 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     }
     fclose(f);
     return SUCCESS;
+}
+
+/**
+Loads all generations that forms a pattern from a file and displays it for a user
+@param fileName - a name of file to read data from
+*/
+int readFromFile(char fileName[])
+{
+    if(fileName == NULL || strlen(fileName) > 50)
+        return INVALID_INPUT_PARAMETER;
+
+    FILE *f;
+    f = fopen(fileName, "r")
+    if(f==NULL)
+        return ERROR; // failed to open a specified file-> probably file with such name does not exit
     
+    //e.g 256; it should be a max size of a generation that a user can choose
+    char t[256];  
+    while(fgets(t, 256,f) != NULL)
+    {
+        printf("%s",t);
+    }
+
+    fclose(f);
+    return SUCCESS;
 }
 
