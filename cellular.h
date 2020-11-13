@@ -1,4 +1,3 @@
-#include <stdio.h>
 #ifndef __CELL_HEADER__
 #define __CELL_HEADER__ 
 
@@ -13,8 +12,9 @@
 #define MEMORY_ALLOCATION_ERROR  102   // Value to be returned if a memory allocation error occurs during the function
 #define INVALID_OPERATION  103         // Value to be returned if your function detects an operation that is being
                                        // attempted on data structure that isn't valid.
-#define ERROR 102                      // General error that does not fit in with the rest of criteria.
-#define FILE_ERROR 104                 // Unable to open a file
+
+#define ERROR 104                      // General error that does not fit in with the rest of criteria.
+#define FILE_ERROR 105                 // Unable to open a file
 /**
 Structure of the Cell
 
@@ -46,32 +46,14 @@ Hashtable to contain all the patterns, which defines a set of rules
 */
 typedef struct rules{
     int size;
-    struct pattern **ruleset;
+    Pattern **ruleset;
 } Rules;
 
 
 /** Allocates the memory and initializes the default values of the cell */
 Cell *initializeCell();
 
-Cell *intializeArray();
-
-/** Completes 1D cellular automation*/
-void cellularAutomation (Cell *array);
-
-/** Displays the current generation to screen*/
-void displayGeneration(Cell *array);
-
-/** Fills the first generation according to the rule*/
-int fillGeneration (Cell *array, int rule);
-
-/** Calculates the next generation based on neighbours*/
-int calculateNextGeneration (Cell *array, Rules* rules);
-
-/**Generates the corresponding values for the rule*/
-Rules* generateRuleValues(int rule);
-
-/** Allows to choose the generation rule*/
-int selectGenerationRule ();
+Cell **intializeArray(int generationSize);
 
 /** Converts a decimal number to binary*/
 long long convertToBinary(int number);
@@ -79,9 +61,31 @@ long long convertToBinary(int number);
 /** Converts a binary number to decimal*/
 int convertToDecimal(long long number);
 
-/** Saves the current generation to a file*/
-void saveGenerationToFile (Cell *array);
+/** Completes 1D cellular automation*/
+void cellularAutomation (Cell *array);
 
+/** Displays the current generation to screen*/
+void displayGeneration(Cell *array, int generationSize);
+
+/** Fills the first generation according to the rule*/
+int fillGeneration (Cell *array, int rule);
+
+/** Returns hashcode for the key parameter*/
+int hashCode(Rules *r, int value);
+
+/** Returns values for the key parameter*/
+int findValue(Rules *r, int value);
+
+/**Generates the corresponding values for the rule*/
+Rules* generateRuleValues(int rule);
+
+/** Calculates the next generation based on neighbours*/
+int calculateNextGeneration (Cell *array, Rules* rules);
+
+/** Saves the current generation to a file*/
+int saveGenerationToFile (Cell *array, int generationSize, char fileName[] );
+
+int readFromFile(char fileName[]);
 
 
 #endif

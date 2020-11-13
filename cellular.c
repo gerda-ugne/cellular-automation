@@ -1,8 +1,7 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h> 
+#include <stdio.h>
 #include "cellular.h"
-
 
 /** ## FUNCTION IMPLEMENTATIONS ## */
 
@@ -39,12 +38,35 @@ Cell **initializeArray(int generationSize)
     return p;
 }
 
+
+/**
+Converts a decimal number into binary and returnts it.
+param @int - number to be converted
+@return - binary number
+*/
+long long convertToBinary(int number)
+{
+    (void)number;
+    return 0;
+}
+
+/**
+Converts a binary number into decimal and returnts it.
+param @long long - number to be converted
+@return - decimal number
+*/
+int convertToDecimal(long long number)
+{
+    (void)number;
+    return 0;
+}
+
 /**
 Method which performs the cellular automation.
 */
 void cellularAutomation (Cell *array)
 {
-
+    (void)array;
 }
 
 /**
@@ -95,32 +117,38 @@ int fillGeneration (Cell *array, int rule)
 
 }
 
-/**
-Calculates the next generation of cells by examining the neighbours.
-
-@param *array - pointer to the array of the generation
-@param rule - rule to calculate by
-*/
-int calculateNextGeneration (Cell *array, Rules *rules)
+int hashCode(Rules *r, int value)
 {
-    if (array == NULL) return INVALID_INPUT_PARAMETER;
-
-    char binaryPattern [3];
-    
-    for (int i=1; i<9; i++)
-    {
-        binaryPattern[0] = array[i-1].prevState;
-        binaryPattern[1] = array[i].prevState;
-        binaryPattern[2] = array[i+1].prevState;
-
-        //process the states by rules..
-        
-    }
-
-    return SUCCESS;
-
+    return value%r->size;
 }
 
+
+/**
+Returns key value for the matched rule pattern.
+@param Rules *r - pointer to a hashtable of chosen rules
+@param char[] value - value to be looked up
+
+@return 0 or 1 depending on the pairing of the rule
+*/
+int findValue(Rules *r, int value)
+{
+
+    int pos = hashCode(r,value);
+
+    Pattern *ruleset = r->ruleset[pos];
+    Pattern *temp = ruleset;
+
+    while(temp)
+    {
+
+    if(temp->binaryPattern == value) return temp->correspondingVal;
+    temp = temp->next;
+    
+    }
+
+    return -1;
+
+}
 
 
 /**
@@ -154,7 +182,7 @@ Rules* generateRuleValues(int rule)
 
     int defaultPatterns[] = {111, 110, 101, 100, 011, 010, 001, 000};
 
-    for(int i=0; i<r->size;i++)
+    for(int i=0; i< r->size ;i++)
     {
         r->ruleset[i]->binaryPattern = defaultPatterns[i];
         r->ruleset[i]->correspondingVal = rulePattern[i];
@@ -165,27 +193,40 @@ Rules* generateRuleValues(int rule)
 }
 
 
-
-
 /**
-Converts a decimal number into binary and returnts it.
-param @int - number to be converted
-@return - binary number
+Calculates the next generation of cells by examining the neighbours.
+
+@param *array - pointer to the array of the generation
+@param rule - rule to calculate by
 */
-long long convertToBinary(int number)
+int calculateNextGeneration (Cell *array, Rules *rules)
 {
-    return 0;
+    if (array == NULL) return INVALID_INPUT_PARAMETER;
+
+    int binaryPattern [3];
+    int binaryPatternAsInt = 0;
+    char newState;
+
+    for (int i=1; i<9; i++)
+    {
+        binaryPattern[0] = array[i-1].prevState;
+        binaryPattern[1] = array[i].prevState;
+        binaryPattern[2] = array[i+1].prevState;
+        
+        
+        binaryPatternAsInt = binaryPattern[0]*100 + binaryPattern[1]*10+binaryPattern[2];
+
+        newState = findValue(rules, binaryPatternAsInt);
+        if(newState == -1) return ERROR;
+        array[i].state = newState;
+        
+    }
+
+    return SUCCESS;
+
 }
 
-/**
-Converts a binary number into decimal and returnts it.
-param @long long - number to be converted
-@return - decimal number
-*/
-int convertToDecimal(long long number)
-{
-    return 0;
-}
+
 
 /**
 Saves the current generation of cells to a file.
@@ -198,7 +239,7 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     if(array == NULL)
         return INVALID_INPUT_PARAMETER;
     
-    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(fileName) == 0)
         return INVALID_INPUT_PARAMETER;
         
     FILE *f;
@@ -206,7 +247,7 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     if(f == NULL)
         return FILE_ERROR;
     
-    for(int i =0, i<generationSize; i++)
+    for(int i =0; i<generationSize; i++)
     {
         fprintf(f,"%d ", array[i].state); 
     }
@@ -221,11 +262,12 @@ Loads all generations that forms a pattern from a file and displays it for a use
 */
 int readFromFile(char fileName[])
 {
-    if(fileName == NULL || strlen(fileName) > 50 || strlen(filename) == 0)
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(fileName) == 0)
         return INVALID_INPUT_PARAMETER;
 
     FILE *f;
-    f = fopen(fileName, "r")
+    f = fopen(fileName, "r");
+
     if(f==NULL)
         return FILE_ERROR; // failed to open a specified file-> probably file with such name does not exit
     

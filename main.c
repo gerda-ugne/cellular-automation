@@ -4,11 +4,11 @@
 
 void displayMenu();
 void processUserChoices();
-int selectGenerationRule();
+int  selectGenerationRule();
 
 int main()
 {
-    Cell **cells = initializeArray();
+    //Cell **cells = initializeArray();
 
 
     processUserChoices();
