@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "cellular.c"
+#include "cellular.h"
 
 void displayMenu();
 void processUserChoices();
