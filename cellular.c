@@ -43,10 +43,22 @@ Converts a decimal number into binary and returnts it.
 param @int - number to be converted
 @return - binary number
 */
-long long convertToBinary(int number)
+long long convertToBinary(int dec)
 {
-    (void)number;
-    return 0;
+    long long bin=0;
+    long long remainder;
+    long long f =1;
+
+    while(dec !=0)
+    {
+        remainder = dec%2;
+        bin = bin + remainder * f;
+        f = f *10;
+        dec = dec/2;
+
+    }
+
+    return bin;
 }
 
 /**
@@ -56,8 +68,18 @@ param @long long - number to be converted
 */
 int convertToDecimal(long long number)
 {
-    (void)number;
-    return 0;
+    long long dec = 0, i = 1, remainder = 0;
+    
+    while (number!=0)
+    {
+        remainder = number%10;
+        dec = dec+remainder*i;
+        i=i*2;
+        number=number/10;
+
+    }
+
+    return dec;
 }
 
 /**
