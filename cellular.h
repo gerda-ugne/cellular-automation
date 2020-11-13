@@ -14,7 +14,7 @@
                                        // attempted on data structure that isn't valid.
 
 #define ERROR 104                      // General error that does not fit in with the rest of criteria.
-#define FILE_ERROR 105                 // Unable to open a file
+#define FILE_ERROR 105                 // An error to do with file handling (opening, writing to, reading, etc.)
 /**
 Structure of the Cell
 
@@ -35,10 +35,10 @@ Information to hold the information of each pattern:
 to match the required roles
 
 */
-typedef struct pattern{
-    int binaryPattern;
+typedef struct node{
+    char binaryPattern[4];
     int correspondingVal;
-    struct pattern *next;
+    struct node *next;
 } Pattern;
 
 /**
@@ -46,14 +46,15 @@ Hashtable to contain all the patterns, which defines a set of rules
 */
 typedef struct rules{
     int size;
-    Pattern **ruleset;
+    Pattern **map;
 } Rules;
 
 
 /** Allocates the memory and initializes the default values of the cell */
 Cell *initializeCell();
 
-Cell **intializeArray(int generationSize);
+/** Initializes an array of cells with provided generation size*/
+Cell **initializeArray(int generationSize);
 
 /** Converts a decimal number to binary*/
 long long convertToBinary(int number);
@@ -62,29 +63,33 @@ long long convertToBinary(int number);
 int convertToDecimal(long long number);
 
 /** Completes 1D cellular automation*/
-void cellularAutomation (Cell *array);
+void cellularAutomation (Cell **array);
 
 /** Displays the current generation to screen*/
-void displayGeneration(Cell *array, int generationSize);
+void displayGeneration(Cell **array, int generationSize);
 
 /** Fills the first generation according to the rule*/
-int fillGeneration (Cell *array, int rule);
+int fillGeneration (Cell **array, int rule);
 
 /** Returns hashcode for the key parameter*/
-int hashCode(Rules *r, int value);
+int hashCode(Rules *r, char value[]);
 
 /** Returns values for the key parameter*/
-int findValue(Rules *r, int value);
+char findValue(Rules *r, char value[]);
+
+/** Allocates memory for a new rule table*/
+Rules *initializeRuleTable(int rule);
 
 /**Generates the corresponding values for the rule*/
 Rules* generateRuleValues(int rule);
 
 /** Calculates the next generation based on neighbours*/
-int calculateNextGeneration (Cell *array, Rules* rules);
+int calculateNextGeneration (Cell **array, Rules* rules);
 
 /** Saves the current generation to a file*/
-int saveGenerationToFile (Cell *array, int generationSize, char fileName[] );
+int saveGenerationToFile (Cell **array, int generationSize, char fileName[] );
 
+/** Reads input from a file and displas the generation to the screen*/
 int readFromFile(char fileName[]);
 
 

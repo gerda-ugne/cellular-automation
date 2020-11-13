@@ -8,8 +8,22 @@ int  selectGenerationRule();
 
 int main()
 {
-    //Cell **cells = initializeArray();
+    Cell **cells = initializeArray(10);
+    if(cells != NULL) printf ("Array intialized successfully!\n");
 
+    if (fillGeneration(cells,30) == SUCCESS)
+    {
+        printf("Generation filled successfully!\n");
+    }
+    displayGeneration(cells, 10);
+    Rules *rules = generateRuleValues(30);
+
+    for(int i=0; i<50; i++)
+    {
+        calculateNextGeneration(cells, rules);
+        displayGeneration(cells,10);
+
+    }
 
     processUserChoices();
     return 0;

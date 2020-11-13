@@ -31,8 +31,7 @@ Cell **initializeArray(int generationSize)
 
     for (int i=0; i<generationSize; i++)
     {
-        Cell *cell = initializeCell();
-        p[i] = cell;
+        p[i] = initializeCell();
     }
 
     return p;
@@ -64,7 +63,7 @@ int convertToDecimal(long long number)
 /**
 Method which performs the cellular automation.
 */
-void cellularAutomation (Cell *array)
+void cellularAutomation (Cell **array)
 {
     (void)array;
 }
@@ -73,12 +72,14 @@ void cellularAutomation (Cell *array)
 Prints the generation to the screen/terminal.
 @param *array - pointer to the array of the generation to print
 */
-void displayGeneration(Cell *array, int generationSize)
+void displayGeneration(Cell **array, int generationSize)
 {   
-    for(int i=1; i<generationSize; i++)
+    for(int i=0; i<generationSize; i++)
     {
-        printf(" %d ", array[i].state);
+        printf(" %d ", array[i]->state);
     }
+
+    printf("\n");
 
 }
 
@@ -90,7 +91,7 @@ bsaed on the provided rule.
 @param rule - rule to use for the filling of the generation
 
 */
-int fillGeneration (Cell *array, int rule)
+int fillGeneration (Cell **array, int rule)
 {
     if(array == NULL) return INVALID_INPUT_PARAMETER;
     if(rule < 1 || rule > 256) return INVALID_INPUT_PARAMETER;
@@ -109,7 +110,7 @@ int fillGeneration (Cell *array, int rule)
 
     for(int i=1; i<9; i++)
     {
-        array[i].state = rulePattern[i];
+        array[i]->state = rulePattern[i];
     }
 
 
@@ -117,9 +118,9 @@ int fillGeneration (Cell *array, int rule)
 
 }
 
-int hashCode(Rules *r, int value)
+int hashCode(Rules *r, char value[])
 {
-    return value%r->size;
+    return strlen(value)%r->size;
 }
 
 
@@ -130,18 +131,18 @@ Returns key value for the matched rule pattern.
 
 @return 0 or 1 depending on the pairing of the rule
 */
-int findValue(Rules *r, int value)
+char findValue(Rules *r, char value[])
 {
 
     int pos = hashCode(r,value);
 
-    Pattern *ruleset = r->ruleset[pos];
-    Pattern *temp = ruleset;
+    Pattern *map = r->map[pos];
+    Pattern *temp = map;
 
     while(temp)
     {
 
-    if(temp->binaryPattern == value) return temp->correspondingVal;
+    if(strcmp(temp->binaryPattern,value)==0) return temp->correspondingVal;
     temp = temp->next;
     
     }
@@ -150,23 +151,39 @@ int findValue(Rules *r, int value)
 
 }
 
+/**
+Allocates memory for a new rule hashtable.
+@return pointer to allocated memory for new rules
+
+*/
+Rules *initializeRuleTable(int rule)
+{
+    Rules *r = (Rules*)malloc(sizeof(Rules));
+    
+    //The default size of the rule table will always be 8
+    r->size = 8;
+
+    r->map = (Pattern**)malloc(sizeof(Pattern*)*r->size);
+    for(int i=0;i<r->size;i++)
+    {
+        r->map[i] = (Pattern*)malloc(sizeof(Pattern));
+    }
+    return r;
+}
+
 
 /**
 Generates the rule values and returns them.
 Each number of 111  	110 	101 	100 	011 	010 	001 	000 
 is paired with each integer form the converted binary number of the rule.
 
-
+@return rules - generated rule values
 */
 
-Rules* generateRuleValues(int rule)
+Rules *generateRuleValues(int rule)
 {
-    Rules *r = (Rules*)malloc(sizeof(Rules));
-    if (r==NULL) return NULL;
 
-    //Default size of the ruleset will always be 8.
-    r->size = 8;
-    r->ruleset = (Pattern**)malloc(sizeof(Pattern*)*8);
+    Rules *r = initializeRuleTable(rule);
 
     //Retains the binary expression of the rule
     long long binaryRuleNumber = convertToBinary(rule);
@@ -180,12 +197,14 @@ Rules* generateRuleValues(int rule)
         binaryRuleNumber = binaryRuleNumber/ 10;
     }
 
-    int defaultPatterns[] = {111, 110, 101, 100, 011, 010, 001, 000};
+    const char defaultPatterns[8][4] = {"111", "110", "101", "100", "011", "010", "001", "000"};
 
     for(int i=0; i< r->size ;i++)
     {
-        r->ruleset[i]->binaryPattern = defaultPatterns[i];
-        r->ruleset[i]->correspondingVal = rulePattern[i];
+        printf("%s \n", defaultPatterns[i]);
+
+        strcpy(r->map[i]->binaryPattern, defaultPatterns[i]);
+        r->map[i]->correspondingVal = rulePattern[i];
     }
 
 
@@ -199,26 +218,22 @@ Calculates the next generation of cells by examining the neighbours.
 @param *array - pointer to the array of the generation
 @param rule - rule to calculate by
 */
-int calculateNextGeneration (Cell *array, Rules *rules)
+int calculateNextGeneration (Cell **array, Rules *rules)
 {
     if (array == NULL) return INVALID_INPUT_PARAMETER;
 
-    int binaryPattern [3];
-    int binaryPatternAsInt = 0;
+    char binaryPattern [3];
     char newState;
 
     for (int i=1; i<9; i++)
     {
-        binaryPattern[0] = array[i-1].prevState;
-        binaryPattern[1] = array[i].prevState;
-        binaryPattern[2] = array[i+1].prevState;
+        binaryPattern[0] = array[i-1]->prevState;
+        binaryPattern[1] = array[i]->prevState;
+        binaryPattern[2] = array[i+1]->prevState;
         
-        
-        binaryPatternAsInt = binaryPattern[0]*100 + binaryPattern[1]*10+binaryPattern[2];
-
-        newState = findValue(rules, binaryPatternAsInt);
+        newState = findValue(rules, binaryPattern);
         if(newState == -1) return ERROR;
-        array[i].state = newState;
+        array[i]->state = newState;
         
     }
 
@@ -234,7 +249,7 @@ Saves the current generation of cells to a file.
 @param generationSize - a size of an array
 @param fileName[] - a file where the output is saved to
 */
-int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
+int saveGenerationToFile (Cell **array, int generationSize, char fileName[] )
 {
     if(array == NULL)
         return INVALID_INPUT_PARAMETER;
@@ -249,7 +264,7 @@ int saveGenerationToFile (Cell *array, int generationSize, char fileName[] )
     
     for(int i =0; i<generationSize; i++)
     {
-        fprintf(f,"%d ", array[i].state); 
+        fprintf(f,"%d ", array[i]->state); 
     }
     fprintf(f,"\n");
     fclose(f);
