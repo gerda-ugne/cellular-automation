@@ -69,13 +69,10 @@ void cellularAutomation (Cell **array);
 void displayGeneration(Cell **array, int generationSize);
 
 /** Fills the first generation according to the rule*/
-int fillGeneration (Cell **array, int rule);
-
-/** Returns hashcode for the key parameter*/
-int hashCode(Rules *r, char value[]);
+int fillFirstGeneration (Cell **array, int rule, int length);
 
 /** Returns values for the key parameter*/
-char findValue(Rules *r, char value[]);
+int findValue(Rules *r, char value[]);
 
 /** Allocates memory for a new rule table*/
 Rules *initializeRuleTable(int rule);
@@ -84,7 +81,7 @@ Rules *initializeRuleTable(int rule);
 Rules* generateRuleValues(int rule);
 
 /** Calculates the next generation based on neighbours*/
-int calculateNextGeneration (Cell **array, Rules* rules);
+int calculateNextGeneration (Cell **array, Rules* rules, int length);
 
 /** Saves the current generation to a file*/
 int saveGenerationToFile (Cell **array, int generationSize, char fileName[] );

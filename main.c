@@ -16,26 +16,26 @@ void loadFile();
 
 int main()
 {
-   /* Cell **cells = initializeArray(10);
+    Cell **cells = initializeArray(40);
     if(cells != NULL) printf ("Array intialized successfully!\n");
 
-    if (fillGeneration(cells,10) == SUCCESS)
+    if (fillFirstGeneration(cells,0,40) == SUCCESS)
     {
         printf("Generation filled successfully!\n");
     }
-    displayGeneration(cells, 10);
-    Rules *rules = generateRuleValues(30);
+    displayGeneration(cells, 40);
+    Rules *rules = generateRuleValues(118);
 
-    for(int i=0; i<20; i++)
+    for(int i=0; i<30; i++)
     {
-        calculateNextGeneration(cells, rules);
-        displayGeneration(cells,10);
+        calculateNextGeneration(cells, rules,40);
+        displayGeneration(cells,40);
 
     }
-*/
+
 
    
-    processUserChoices();
+    //processUserChoices();
     return 0;
 }
 
@@ -105,12 +105,13 @@ void createNewGeneration()
 
     //creating a generation by using variables with their new values
     Cell **cells = initializeArray(length);
-    fillGeneration(cells,rule);
+    //fillFirstGeneration(cells,rule);
     Rules *rules = generateRuleValues(rule);
 
+    fillFirstGeneration(cells, 0, length);
     for(int i=0; i<num; i++)
     {
-        calculateNextGeneration(cells, rules);
+        calculateNextGeneration(cells, rules, length);
         saveGenerationToFile(cells,length,fileName);
         displayGeneration(cells,length);
     }
@@ -133,6 +134,7 @@ void loadFile()
         int size=52;
         char *fileName = getFileName(name,size);
         printf("\n");
+
         result= readFromFile(fileName);
         if(result == FILE_ERROR)
         printf("File with such name does not exist\n");
@@ -170,8 +172,8 @@ Selects a number for the first generation
 */
 void selectFirstGeneration(int *gen)
 {
-    char text[]="A binary expression of a number will be used as a starting point for a Cellular Automaton.\n Please, enter a number for it  (1-255)";
-    isIntValid(1,255,gen,text );
+    char text[]="A binary expression of a number will be used as a starting point for a Cellular Automaton.\n Please enter a number for it (1-255), or enter 0 to use the standard Wolfram model.";
+    isIntValid(0,255,gen,text );
 }
 
 /**
@@ -230,7 +232,7 @@ char *getFileName(char name[],int size)
     char *p;
     do
     { 
-        printf("Please, enter a file name with up to 50 characters: ");
+        printf("Please enter a file name with up to 50 characters: ");
         fgets(name, size, stdin);
         if ( (p = strchr(name, '\n')) != NULL)
         {

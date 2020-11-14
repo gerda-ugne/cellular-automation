@@ -96,9 +96,11 @@ Prints the generation to the screen/terminal.
 */
 void displayGeneration(Cell **array, int generationSize)
 {   
-    for(int i=0; i<generationSize; i++)
+    for(int i=1; i<generationSize-1; i++)
     {
-        printf(" %d ", array[i]->state);
+        if(array[i]->state == 0) printf(" . ");
+        else if(array[i]->state == 1) printf( " # ");
+        //printf(" %d ", array[i]->state);
     }
 
     printf("\n");
@@ -113,36 +115,62 @@ bsaed on the provided rule.
 @param rule - rule to use for the filling of the generation
 
 */
-int fillGeneration (Cell **array, int rule)
+int fillFirstGeneration (Cell **array, int rule, int length)
 {
     if(array == NULL) return INVALID_INPUT_PARAMETER;
-    if(rule < 1 || rule > 256) return INVALID_INPUT_PARAMETER;
+    if(rule < 0 || rule > 256) return INVALID_INPUT_PARAMETER;
+
+    //If rule is chosen as 0, we are using the default Wolfram model: all cells states are 0, except for the middle one.
+    if(rule == 0)
+    {
+        for(int i=0; i<length; i++)
+        {
+            array[i]->prevState = 0;
+            array[i]->state = 0;
+        }
+
+        int midpoint = length/2;
+        array[midpoint]->state=1;
+        array[midpoint]->prevState=1;
+
+        return SUCCESS;
+    }
+
+    //Else we fill the array with provided digits.
 
     //Retains the binary expression of the rule
     long long binaryRuleNumber = convertToBinary(rule);
 
     //Converts the rule numbers into an array of digits for easier comparison
-    int rulePattern[9];
+    int rulePattern[8];
 
-    for (int i=9; i>=1; i--)
+    for (int i=8; i>=1; i--)
     {
         rulePattern[i] = binaryRuleNumber % 10;
         binaryRuleNumber = binaryRuleNumber/ 10;
     }
 
-    for(int i=1; i<9; i++)
+
+    
+    //Cells are filled with matching numbers.
+    for(int i=1, j=i; i<length-1; i++, j++)
     {
-        array[i]->state = rulePattern[i];
+        if(j>8) j=j-8;
+
+        array[i]->state = rulePattern[j];
+        array[i]->prevState = rulePattern[j];
+    
     }
 
+    //First and last cell are set to 0, as they are edges and won't be manipulated.
+    array[0]->state = 0;
+    array[0]->prevState = 0;
+
+    //array[length]->state = 0;
+    //array[length]->prevState = 0;
 
     return SUCCESS;
 
-}
-
-int hashCode(Rules *r, char value[])
-{
-    return strlen(value)%r->size;
 }
 
 
@@ -152,22 +180,18 @@ Returns key value for the matched rule pattern.
 @param char[] value - value to be looked up
 
 @return 0 or 1 depending on the pairing of the rule
+Logic adapted from github.com/BaseMax/HashMapC Hash*GetValue method.
+
 */
-char findValue(Rules *r, char value[])
+int findValue(Rules *r, char value[])
 {
 
-    int pos = hashCode(r,value);
-
-    Pattern *map = r->map[pos];
-    Pattern *temp = map;
-
-    while(temp)
-    {
-
-    if(strcmp(temp->binaryPattern,value)==0) return temp->correspondingVal;
-    temp = temp->next;
-    
-    }
+    for(size_t index=0; index < r->size; index++) {
+		Pattern *item=r->map[index];
+		if(item != NULL && strcmp(item->binaryPattern,value)==0) {
+			return item->correspondingVal;
+		}
+	}
 
     return -1;
 
@@ -211,24 +235,21 @@ Rules *generateRuleValues(int rule)
     long long binaryRuleNumber = convertToBinary(rule);
 
     //Converts the rule numbers into an array of digits for easier comparison
-    int rulePattern[8];
-
-    for (int i=8; i>=0; i--)
+    int rulePattern[9];
+    for (int i=8; i>=1; i--)
     {
         rulePattern[i] = binaryRuleNumber % 10;
         binaryRuleNumber = binaryRuleNumber/ 10;
+
     }
 
     const char defaultPatterns[8][4] = {"111", "110", "101", "100", "011", "010", "001", "000"};
-
-    for(int i=0; i< r->size ;i++)
+    for(int i=0,j=1; i< r->size; i++, j++)
     {
-        printf("%s \n", defaultPatterns[i]);
-
         strcpy(r->map[i]->binaryPattern, defaultPatterns[i]);
-        r->map[i]->correspondingVal = rulePattern[i];
-    }
+        r->map[i]->correspondingVal = rulePattern[j];
 
+    }
 
     return r;
 }
@@ -239,24 +260,31 @@ Calculates the next generation of cells by examining the neighbours.
 
 @param *array - pointer to the array of the generation
 @param rule - rule to calculate by
+@param length - length of the generation
 */
-int calculateNextGeneration (Cell **array, Rules *rules)
+int calculateNextGeneration (Cell **array, Rules *rules, int length)
 {
     if (array == NULL) return INVALID_INPUT_PARAMETER;
 
-    char binaryPattern [3];
     char newState;
 
-    for (int i=1; i<9; i++)
+    for (int i=1; i<length-1; i++)
     {
-        binaryPattern[0] = array[i-1]->prevState;
-        binaryPattern[1] = array[i]->prevState;
-        binaryPattern[2] = array[i+1]->prevState;
-        
+        char number1 = array[i-1]->prevState + '0';
+        char number2 = array[i]->prevState + '0';
+        char number3 = array[i+1]->prevState+ '0';
+
+        char binaryPattern [] = {number1,number2,number3};
+
         newState = findValue(rules, binaryPattern);
         if(newState == -1) return ERROR;
         array[i]->state = newState;
         
+    }
+
+    for(int i=1; i<length-1; i++)
+    {
+        array[i]->prevState = array[i]->state;
     }
 
     return SUCCESS;
