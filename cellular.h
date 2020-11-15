@@ -62,9 +62,6 @@ long long convertToBinary(int number);
 /** Converts a binary number to decimal*/
 int convertToDecimal(long long number);
 
-/** Completes 1D cellular automation*/
-void cellularAutomation (Cell **array);
-
 /** Displays the current generation to screen*/
 void displayGeneration(Cell **array, int generationSize);
 
@@ -75,7 +72,7 @@ int fillFirstGeneration (Cell **array, int rule, int length);
 int findValue(Rules *r, char value[]);
 
 /** Allocates memory for a new rule table*/
-Rules *initializeRuleTable(int rule);
+Rules *initializeRuleTable();
 
 /**Generates the corresponding values for the rule*/
 Rules* generateRuleValues(int rule);

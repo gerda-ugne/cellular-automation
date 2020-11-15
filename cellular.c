@@ -3,11 +3,12 @@
 #include <stdio.h>
 #include "cellular.h"
 
-/** ## FUNCTION IMPLEMENTATIONS ## */
+/* ## FUNCTION IMPLEMENTATIONS ## */
 
 
-/**
+/*
 Allocates the space for the cell and initializes its values.
+@return pointer to the allocated Cell 
 */
 Cell *initializeCell()
 {
@@ -22,14 +23,15 @@ Cell *initializeCell()
 }
 
 
-/**
+/*
 Initializes the array of cells
+@return double pointer to the allocated array
 */
 Cell **initializeArray(int generationSize)
 {
     Cell **p = (Cell**)malloc(sizeof(Cell*)*generationSize);
 
-    for (int i=0; i<generationSize; i++)
+    for (int i=0; i<=generationSize; i++)
     {
         p[i] = initializeCell();
     }
@@ -38,7 +40,7 @@ Cell **initializeArray(int generationSize)
 }
 
 
-/**
+/*
 Converts a decimal number into binary and returnts it.
 param @int - number to be converted
 @return - binary number
@@ -61,7 +63,7 @@ long long convertToBinary(int dec)
     return bin;
 }
 
-/**
+/*
 Converts a binary number into decimal and returnts it.
 param @long long - number to be converted
 @return - decimal number
@@ -82,15 +84,8 @@ int convertToDecimal(long long number)
     return dec;
 }
 
-/**
-Method which performs the cellular automation.
-*/
-void cellularAutomation (Cell **array)
-{
-    (void)array;
-}
 
-/**
+/*
 Prints the generation to the screen/terminal.
 @param *array - pointer to the array of the generation to print
 */
@@ -107,21 +102,23 @@ void displayGeneration(Cell **array, int generationSize)
 
 }
 
-/**
+/*
 Fills the first generation with 0's and 1's
 bsaed on the provided rule.
 
 @param *array - pointer to the array of the generation
 @param rule - rule to use for the filling of the generation
 
+@return SUCCESS or an error code depending on outcome.
+
 */
-int fillFirstGeneration (Cell **array, int rule, int length)
+int fillFirstGeneration (Cell **array, int pattern, int length)
 {
     if(array == NULL) return INVALID_INPUT_PARAMETER;
-    if(rule < 0 || rule > 256) return INVALID_INPUT_PARAMETER;
+    if(pattern < 0 || pattern > 256) return INVALID_INPUT_PARAMETER;
 
-    //If rule is chosen as 0, we are using the default Wolfram model: all cells states are 0, except for the middle one.
-    if(rule == 0)
+    //If the pattern is chosen as 0, we are using the default Wolfram model: all cells states are 0, except for the middle one.
+    if(pattern == 0)
     {
         for(int i=0; i<length; i++)
         {
@@ -136,18 +133,18 @@ int fillFirstGeneration (Cell **array, int rule, int length)
         return SUCCESS;
     }
 
-    //Else we fill the array with provided digits.
+    //Else we fill the array with a repeated binary expression of the provided number.
 
     //Retains the binary expression of the rule
-    long long binaryRuleNumber = convertToBinary(rule);
+    long long binaryConversion = convertToBinary(pattern);
 
     //Converts the rule numbers into an array of digits for easier comparison
-    int rulePattern[8];
+    int binaryPattern[8];
 
     for (int i=8; i>=1; i--)
     {
-        rulePattern[i] = binaryRuleNumber % 10;
-        binaryRuleNumber = binaryRuleNumber/ 10;
+        binaryPattern[i] = binaryConversion % 10;
+        binaryConversion = binaryConversion/10;
     }
 
 
@@ -157,8 +154,8 @@ int fillFirstGeneration (Cell **array, int rule, int length)
     {
         if(j>8) j=j-8;
 
-        array[i]->state = rulePattern[j];
-        array[i]->prevState = rulePattern[j];
+        array[i]->state = binaryPattern[j];
+        array[i]->prevState = binaryPattern[j];
     
     }
 
@@ -166,15 +163,15 @@ int fillFirstGeneration (Cell **array, int rule, int length)
     array[0]->state = 0;
     array[0]->prevState = 0;
 
-    //array[length]->state = 0;
-    //array[length]->prevState = 0;
+    array[length]->state = 0;
+    array[length]->prevState = 0;
 
     return SUCCESS;
 
 }
 
 
-/**
+/*
 Returns key value for the matched rule pattern.
 @param Rules *r - pointer to a hashtable of chosen rules
 @param char[] value - value to be looked up
@@ -197,12 +194,12 @@ int findValue(Rules *r, char value[])
 
 }
 
-/**
-Allocates memory for a new rule hashtable.
+/*
+Allocates memory for a new rule hashmap.
 @return pointer to allocated memory for new rules
 
 */
-Rules *initializeRuleTable(int rule)
+Rules *initializeRuleTable()
 {
     Rules *r = (Rules*)malloc(sizeof(Rules));
     
@@ -218,11 +215,12 @@ Rules *initializeRuleTable(int rule)
 }
 
 
-/**
+/*
 Generates the rule values and returns them.
-Each number of 111  	110 	101 	100 	011 	010 	001 	000 
+Each pattern of 111  	110 	101 	100 	011 	010 	001 	000 
 is paired with each integer form the converted binary number of the rule.
 
+@param rule - rule of which values to generate
 @return rules - generated rule values
 */
 
@@ -255,12 +253,14 @@ Rules *generateRuleValues(int rule)
 }
 
 
-/**
+/*
 Calculates the next generation of cells by examining the neighbours.
 
 @param *array - pointer to the array of the generation
 @param rule - rule to calculate by
 @param length - length of the generation
+
+@return SUCCESS if successful/error code otherwise
 */
 int calculateNextGeneration (Cell **array, Rules *rules, int length)
 {
@@ -293,11 +293,13 @@ int calculateNextGeneration (Cell **array, Rules *rules, int length)
 
 
 
-/**
+/*
 Saves the current generation of cells to a file.
 @param *array - pointer to the generation to be saved
 @param generationSize - a size of an array
 @param fileName[] - a file where the output is saved to
+
+@return SUCCESS if successful/error code otherwise
 */
 int saveGenerationToFile (Cell **array, int generationSize, char fileName[] )
 {
@@ -324,6 +326,8 @@ int saveGenerationToFile (Cell **array, int generationSize, char fileName[] )
 /**
 Loads all generations that forms a pattern from a file and displays it for a user
 @param fileName - a name of file to read data from
+
+@return SUCCESS if successful/error code otherwise
 */
 int readFromFile(char fileName[])
 {

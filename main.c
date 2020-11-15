@@ -3,6 +3,7 @@
 #include <string.h>
 #include "cellular.h"
 
+/* FUNCTIONS SUPPORTED IN THE MAIN CLASS*/
 void displayMenu();
 void processUserChoices();
 void createNewGeneration();
@@ -19,12 +20,12 @@ int main()
     Cell **cells = initializeArray(40);
     if(cells != NULL) printf ("Array intialized successfully!\n");
 
-    if (fillFirstGeneration(cells,0,40) == SUCCESS)
+    if (fillFirstGeneration(cells,3,40) == SUCCESS)
     {
         printf("Generation filled successfully!\n");
     }
     displayGeneration(cells, 40);
-    Rules *rules = generateRuleValues(118);
+    Rules *rules = generateRuleValues(30);
 
     for(int i=0; i<30; i++)
     {
@@ -34,8 +35,11 @@ int main()
     }
 
 
+   free(rules);
+   free(cells);
+
    
-    //processUserChoices();
+   //processUserChoices();
     return 0;
 }
 
@@ -58,7 +62,8 @@ void processUserChoices()
             loadFile();
     }
 }
-/**
+
+/*
 Displays available menu functions for the user to choose from
 */
 void displayMenu()
@@ -72,7 +77,7 @@ void displayMenu()
 }
 
 
-/**
+/*
 Creates a new Cellular Automaton
 */
 void createNewGeneration()
@@ -103,6 +108,9 @@ void createNewGeneration()
     
 
 
+    //Increase the original length by 2 as first and last cell are not manipulated for edge control
+    length=length+2;
+
     //creating a generation by using variables with their new values
     Cell **cells = initializeArray(length);
     //fillFirstGeneration(cells,rule);
@@ -122,7 +130,7 @@ void createNewGeneration()
 
 }
 
-/**
+/*
 Reads data from a chosen file
 */
 void loadFile()
@@ -142,7 +150,7 @@ void loadFile()
     while(result != SUCCESS);
 }
 
-/**
+/*
 Selects the size of a generation 
 @param *length - a pointer to length variable
 */
@@ -154,7 +162,7 @@ void selectLengthOfGeneration(int *length)
     
 }
 
-/**
+/*
 Selects a number of generations
 @param *num - a pointer to a num variable 
 */
@@ -166,28 +174,28 @@ void selectNumberOfGenerations(int *num)
 }
  
 
-/**
+/*
 Selects a number for the first generation
 @param *gen - a pointer to a gen variable
 */
 void selectFirstGeneration(int *gen)
 {
-    char text[]="A binary expression of a number will be used as a starting point for a Cellular Automaton.\n Please enter a number for it (1-255), or enter 0 to use the standard Wolfram model.";
+    char text[]="A binary expression of a number will be used as a starting point for a Cellular Automaton.\n Please enter a number (1-255), or enter 0 to use the standard Wolfram model.";
     isIntValid(0,255,gen,text );
 }
 
-/**
+/*
 Selects a rule 
 @param *rule - a pointer to a rule variable
 */
 void selectGenerationRule(int *rule)
 {
-    char text[] = "Please, choose a rule set (0-255) that you want to apply for Cellular Automaton, (e.g. Rule 45)\n Rule ";
+    char text[] = "Please choose a rule set (0-255) that you want to apply for Cellular Automaton, (e.g. Rule 45)\n Rule ";
     isIntValid(0,255,rule,text );
 }
 
 
-/**
+/*
 Validates int variables 
 @param min - a minimum value 
 @param max - a maximum value
@@ -221,10 +229,12 @@ void isIntValid( int min, int max, int *number, char text[])
     printf("\n");
 }
 
-/**
+/*
 Gets a valid string
 @param name[] an array of characters to be filled
 @param size - a size of an array 
+
+@return valid string
 */
 char *getFileName(char name[],int size)
 {  
