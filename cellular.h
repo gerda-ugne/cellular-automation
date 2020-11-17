@@ -56,7 +56,9 @@ Cell *initializeCell();
 /** Initializes an array of cells with provided generation size*/
 Cell **initializeArray(int generationSize);
 
-/** Converts a decimal number to binary*/
+Cell **intialize2DArray(int columns, int rows);
+
+/** Converts  a decimal number to binary*/
 long long convertToBinary(int number);
 
 /** Converts a binary number to decimal*/
@@ -85,6 +87,10 @@ int saveGenerationToFile (Cell **array, int generationSize, char fileName[] );
 
 /** Reads input from a file and displas the generation to the screen*/
 int readFromFile(char fileName[]);
-
+int gameOfLife(int columns, int rows, int generationSize);
+void calculateNeighboursForGame(Cell** p, int columns, int rows);
+void calculateGameOfLifeGeneration(Cell **cells, int columns, int rows);
+void gameOfLifeRules(Cell **p, int x, int y); 
+void displayGameOfLife(Cell **cells, int columns, int rows);
 
 #endif

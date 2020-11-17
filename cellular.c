@@ -30,6 +30,7 @@ Initializes the array of cells
 Cell **initializeArray(int generationSize)
 {
     Cell **p = (Cell**)malloc(sizeof(Cell*)*generationSize);
+    if(p == NULL) return NULL;
 
     for (int i=0; i<=generationSize; i++)
     {
@@ -39,6 +40,26 @@ Cell **initializeArray(int generationSize)
     return p;
 }
 
+/*
+Initializes a 2D array of cells
+#return double pointer to the allocated 2D array
+*/
+Cell **intialize2DArray(int columns, int rows)
+{
+    Cell **p = (Cell**)malloc(sizeof(Cell*)*rows);
+    if(p == NULL) return NULL;
+
+    for (int i=0; i<rows; i++)
+    { 
+        p[i] = (Cell*)malloc(columns * sizeof(Cell)); 
+        for(int j=0; j<columns; j++)
+        {
+            p[i][j] = initializeCell();
+        }
+    }
+
+    return p;
+}
 
 /*
 Converts a decimal number into binary and returnts it.
@@ -95,7 +116,6 @@ void displayGeneration(Cell **array, int generationSize)
     {
         if(array[i]->state == 0) printf(" . ");
         else if(array[i]->state == 1) printf( " # ");
-        //printf(" %d ", array[i]->state);
     }
 
     printf("\n");
@@ -351,3 +371,87 @@ int readFromFile(char fileName[])
     return SUCCESS;
 }
 
+
+int gameOfLife(int columns, int rows, int generationSize)
+{
+    //Initialize 2D array
+    Cell** cells = intialize2DArray(columns, rows);
+    
+    //Fill the grid with random 0's and 1's
+    for (int i=0; i<columns; i++)
+    {
+        for(int j=0; j<rows; j++)
+        {
+            //Set each cell's previous and current state
+            cells[i][j]->state = rand()%2;
+            cells[i][j]->prevState = cells[i][j]->state;
+        }
+    }
+
+    calculateGameOfLifeGeneration(cells, columns, rows);
+    
+}
+
+void calculateNeighboursForGame(Cell** p, int x, int y)
+{
+    for(int i=-1; i<=1; i++)
+    {
+        for(int j=-1; j<=1; j++)
+        {
+            p[x][y]->neighbours+=p[x+i][y+j];
+        }
+    }
+
+    p[x][y]->neighbors -= p[x][y];
+
+}
+
+void gameOfLifeRules(Cell **p, int x, int y)
+{
+    if((p[x][y]->prevState ==  1) && (p[x][y]->neighbors <  2)) p[x][y]->state = 0;
+    else if (((p[x][y]->prevState == 1) && (p[x][y]->neighbors >  3))) p[x][y]->state = 0;
+    else if ((p[x][y]->prevState == 0) && (p[x][y]->neighbors == 3)) p[x][y]->state = 0;
+    else p[x][y]->state = p[x][y]->prevState;
+
+
+}
+
+void calculateGameOfLifeGeneration(Cell **cells, int columns, int rows)
+{
+    
+    //Calculates the neighbours
+    for (int i=1; i<columns-1; i++)
+    {
+        for(int j=1; j<rows-1; j++)
+        {
+           calculateNeighboursForGame(cells, i, j);
+           gameOfLifeRules(cells, i, j);
+        }
+    }
+
+    //Set previous state to match the current state
+    for (int i=1; i<columns-1; i++)
+    {
+        for(int j=1; j<rows-1; j++)
+        {
+           cells[i][j]->prevState = cells[i][j]->state;
+        }
+    }
+
+}
+
+void displayGameOfLife(Cell **cells, int columns, int rows)
+{
+
+    for (int i=1; i<columns-1; i++)
+    {
+        for(int j=1; j<rows-1; j++)
+        {
+            if(cells[i][j]->state == 0) printf(" . ");
+            else if(cells[i][j]->state == 1) printf( " # ");
+        }
+
+        printf("\n");
+    }
+    
+}

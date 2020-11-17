@@ -17,7 +17,7 @@ void loadFile();
 
 int main()
 {
-    Cell **cells = initializeArray(40);
+    /*Cell **cells = initializeArray(40);
     if(cells != NULL) printf ("Array intialized successfully!\n");
 
     if (fillFirstGeneration(cells,3,40) == SUCCESS)
@@ -37,9 +37,8 @@ int main()
 
    free(rules);
    free(cells);
-
-   
-   //processUserChoices();
+*/
+   processUserChoices();
     return 0;
 }
 
