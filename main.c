@@ -17,9 +17,8 @@ void loadFile();
 
 int main()
 {
-    /*
-    
-    Cell **cells = initializeArray(40);
+    /*Cell **cells = initializeArray(40);
+
     if(cells != NULL) printf ("Array intialized successfully!\n");
 
     if (fillFirstGeneration(cells,3,40) == SUCCESS)
@@ -39,9 +38,12 @@ int main()
 
    free(rules);
    free(cells);
-    
-   */
-   processUserChoices();
+
+    //Initialize 2D array
+    Cell*** cells = intialize2DArray(30, 30);
+    gameOfLife(cells, 30,30,40);
+   //processUserChoices();
+
     return 0;
 }
 
