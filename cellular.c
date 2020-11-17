@@ -31,7 +31,7 @@ Cell **initializeArray(int generationSize)
 {
     Cell **p = (Cell**)malloc(sizeof(Cell*)*generationSize);
 
-    for (int i=0; i<=generationSize; i++)
+    for (int i=0; i<generationSize; i++)
     {
         p[i] = initializeCell();
     }

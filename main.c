@@ -130,15 +130,16 @@ void createNewGeneration()
     printf("\n");
 
 
-    for(int i=0; i< length; i++)
+    for(int i=0; i < length; i++)
     {
-        cells[i]->state = 0;
-        cells[i]->prevState = 0;
-        cells[i]->neighbours = 0; 
         free(cells[i]);
-    } 
-    free(rules);
+        cells[i] = NULL;
+    }
+    
     free(cells);
+    cells = NULL;
+    
+    free(rules);
 
 }
 
