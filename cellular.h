@@ -81,7 +81,7 @@ Rules* generateRuleValues(int rule);
 int calculateNextGeneration (Cell **array, Rules* rules, int length);
 
 /** Saves the current generation to a file*/
-int saveGenerationToFile (Cell **array, int generationSize, char fileName[] );
+int saveGenerationToFile (Cell **array, int generationSize, char fileName[], int count,int gen, int rule);
 
 /** Reads input from a file and displas the generation to the screen*/
 int readFromFile(char fileName[]);
