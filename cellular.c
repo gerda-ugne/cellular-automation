@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h> 
 #include <stdio.h>
+#include <unistd.h>
 #include "cellular.h"
 
 /* ## FUNCTION IMPLEMENTATIONS ## */
@@ -16,8 +17,8 @@ Cell *initializeCell()
     if (cell == NULL) return NULL;
 
     cell->state = 0;
-    cell->prevState = -1;
-    cell->neighbours = -1;
+    cell->prevState = 0;
+    cell->neighbours = 0;
 
     return cell;
 }
@@ -44,14 +45,14 @@ Cell **initializeArray(int generationSize)
 Initializes a 2D array of cells
 #return double pointer to the allocated 2D array
 */
-Cell **intialize2DArray(int columns, int rows)
+Cell ***intialize2DArray(int columns, int rows)
 {
-    Cell **p = (Cell**)malloc(sizeof(Cell*)*rows);
+    Cell ***p = (Cell***)malloc(sizeof(Cell**)*rows);
     if(p == NULL) return NULL;
 
     for (int i=0; i<rows; i++)
     { 
-        p[i] = (Cell*)malloc(columns * sizeof(Cell)); 
+        p[i] = (Cell**)malloc(columns * sizeof(Cell*)); 
         for(int j=0; j<columns; j++)
         {
             p[i][j] = initializeCell();
@@ -371,16 +372,20 @@ int readFromFile(char fileName[])
     return SUCCESS;
 }
 
+/*
+Main method to simulate Conway's Game of Life.
+@param cells - triple pointer to the 2D array of cells
+@param columns - size parameter for the 2D array
+@param rows - size parameter for the 2D array
+@param loops - amount of loops to generate the array for
 
-int gameOfLife(int columns, int rows, int generationSize)
+*/
+void gameOfLife(Cell*** cells, int columns, int rows, int loops)
 {
-    //Initialize 2D array
-    Cell** cells = intialize2DArray(columns, rows);
-    
     //Fill the grid with random 0's and 1's
-    for (int i=0; i<columns; i++)
+    for (int i=1; i<columns-1; i++)
     {
-        for(int j=0; j<rows; j++)
+        for(int j=1; j<rows-1; j++)
         {
             //Set each cell's previous and current state
             cells[i][j]->state = rand()%2;
@@ -388,59 +393,106 @@ int gameOfLife(int columns, int rows, int generationSize)
         }
     }
 
-    calculateGameOfLifeGeneration(cells, columns, rows);
+    //Generate game of life for x loops
+    for(int i=0; i<loops; i++)
+    {
+        //For every cell in the game
+        for(int i=1; i<columns-1; i++)
+        {
+            for(int j=1; j<rows-1; j++)
+            {
+                calculateNeighboursForGame(cells,i,j);
+                cells[i][j]->state = gameOfLifeRules(cells, i, j);
+            }
+        }
+       system("clear");
+       displayGameOfLife(cells, columns, rows);
+       sleep(1);
+
+       // Resets neighbours and sets prev state to match the current state
+       resetParameters(cells, columns, rows);
+    
+    }
     
 }
 
-void calculateNeighboursForGame(Cell** p, int x, int y)
+/*
+Reset parameters of the 2D array for the next iteration of the loop.
+@param p - triple pointer to the 2D array
+@param columns - size parameter for the 2D array
+@param rows - size parameter for the 2D array
+*/
+void resetParameters(Cell ***p, int columns, int rows)
+{
+           
+    //For every cell in the game
+    for(int i=1; i<columns-1; i++)
+    {
+            for(int j=1; j<rows-1; j++)
+            {
+              p[i][j]->neighbours = 0;
+            }
+
+    }
+
+    //Set previous state to match the current state
+        for (int i=1; i<columns-1; i++)
+         {
+            for(int j=1; j<rows-1; j++)
+            {
+                p[i][j]->prevState = p[i][j]->state;
+            }
+         }
+
+  
+}
+
+/*
+Calculates the neighbour cells for the 2D array.
+@param p - triple pointer to the 2D array
+@param x - x position of the cell element to count neighbours for
+@param y - y position of the cell element to count neighbours for
+*/
+void calculateNeighboursForGame(Cell*** p, int x, int y)
 {
     for(int i=-1; i<=1; i++)
     {
         for(int j=-1; j<=1; j++)
         {
-            p[x][y]->neighbours+=p[x+i][y+j];
+            p[x][y]->neighbours= p[x][y]-> neighbours + p[x+i][y+j]->prevState;
         }
     }
 
-    p[x][y]->neighbors -= p[x][y];
+    if(p[x][y]->prevState == 1) p[x][y]->neighbours = p[x][y]->neighbours - 1;
 
 }
 
-void gameOfLifeRules(Cell **p, int x, int y)
+/*
+Uses the game of life rules to calculate the outcome of the cell state.
+@param p - triple pointer to the 2D array
+@param x - x position of the cell element to count new state for
+@param y - y position of the cell element to count new state for
+
+@return int - new state of the cell
+*/
+int gameOfLifeRules(Cell ***p, int x, int y)
 {
-    if((p[x][y]->prevState ==  1) && (p[x][y]->neighbors <  2)) p[x][y]->state = 0;
-    else if (((p[x][y]->prevState == 1) && (p[x][y]->neighbors >  3))) p[x][y]->state = 0;
-    else if ((p[x][y]->prevState == 0) && (p[x][y]->neighbors == 3)) p[x][y]->state = 0;
-    else p[x][y]->state = p[x][y]->prevState;
 
-
-}
-
-void calculateGameOfLifeGeneration(Cell **cells, int columns, int rows)
-{
-    
-    //Calculates the neighbours
-    for (int i=1; i<columns-1; i++)
-    {
-        for(int j=1; j<rows-1; j++)
-        {
-           calculateNeighboursForGame(cells, i, j);
-           gameOfLifeRules(cells, i, j);
-        }
-    }
-
-    //Set previous state to match the current state
-    for (int i=1; i<columns-1; i++)
-    {
-        for(int j=1; j<rows-1; j++)
-        {
-           cells[i][j]->prevState = cells[i][j]->state;
-        }
-    }
+    if((p[x][y]->prevState ==  1) && (p[x][y]->neighbours < 2)) {return 0;}
+    else if (((p[x][y]->prevState == 1) && (p[x][y]->neighbours >  3))) { return 0;}
+    else if ((p[x][y]->prevState == 0) && (p[x][y]->neighbours == 3))  {return 1;}
+    else {return p[x][y]->prevState;}
 
 }
 
-void displayGameOfLife(Cell **cells, int columns, int rows)
+/*
+Displays the game of life generation to the terminal.
+@param p - triple pointer to the 2D array
+@param columns - size parameter for the 2D array
+@param rows - size parameter for the 2D array
+
+*/
+void displayGameOfLife(Cell ***cells, int columns, int rows)
 {
 
     for (int i=1; i<columns-1; i++)

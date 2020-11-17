@@ -56,8 +56,6 @@ Cell *initializeCell();
 /** Initializes an array of cells with provided generation size*/
 Cell **initializeArray(int generationSize);
 
-Cell **intialize2DArray(int columns, int rows);
-
 /** Converts  a decimal number to binary*/
 long long convertToBinary(int number);
 
@@ -87,10 +85,25 @@ int saveGenerationToFile (Cell **array, int generationSize, char fileName[] );
 
 /** Reads input from a file and displas the generation to the screen*/
 int readFromFile(char fileName[]);
-int gameOfLife(int columns, int rows, int generationSize);
-void calculateNeighboursForGame(Cell** p, int columns, int rows);
-void calculateGameOfLifeGeneration(Cell **cells, int columns, int rows);
-void gameOfLifeRules(Cell **p, int x, int y); 
-void displayGameOfLife(Cell **cells, int columns, int rows);
+
+/* FUNCTIONS FOR GAME OF LIFE */
+
+/** Initializes a 2D array with provided size. [GAME OF LIFE]*/
+Cell ***intialize2DArray(int columns, int rows);
+
+/*Main method to simulate Conway's Game of Life.*/
+void gameOfLife(Cell*** cell, int columns, int rows, int loops);
+
+/*Reset parameters of the 2D array for the next iteration of the loop. [GAME OF LIFE}*/
+void resetParameters(Cell ***p, int columns, int rows);
+
+/*Calculates the neighbour cells for the 2D array. [GAME OF LIFE]*/
+void calculateNeighboursForGame(Cell*** p, int columns, int rows);
+
+/*Uses the game of life rules to calculate the outcome of the cell state. [GAME OF LIFE]*/
+int gameOfLifeRules(Cell ***p, int x, int y); 
+
+/*Displays the game of life generation to the terminal. [GAME OF LIFE]*/
+void displayGameOfLife(Cell ***cells, int columns, int rows);
 
 #endif

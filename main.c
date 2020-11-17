@@ -38,7 +38,10 @@ int main()
    free(rules);
    free(cells);
 */
-   processUserChoices();
+    //Initialize 2D array
+    Cell*** cells = intialize2DArray(30, 30);
+    gameOfLife(cells, 30,30,40);
+   //processUserChoices();
     return 0;
 }
 
