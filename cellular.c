@@ -31,7 +31,7 @@ Cell **initializeArray(int generationSize)
 {
     Cell **p = (Cell**)malloc(sizeof(Cell*)*generationSize);
 
-    for (int i=0; i<=generationSize; i++)
+    for (int i=0; i<generationSize; i++)
     {
         p[i] = initializeCell();
     }
@@ -90,8 +90,8 @@ Prints the generation to the screen/terminal.
 @param *array - pointer to the array of the generation to print
 */
 void displayGeneration(Cell **array, int generationSize)
-{   
-    for(int i=1; i<generationSize-1; i++)
+{ 
+    for(int i=0; i<generationSize; i++)
     {
         if(array[i]->state == 0) printf(" . ");
         else if(array[i]->state == 1) printf( " # ");
@@ -115,7 +115,8 @@ bsaed on the provided rule.
 int fillFirstGeneration (Cell **array, int pattern, int length)
 {
     if(array == NULL) return INVALID_INPUT_PARAMETER;
-    if(pattern < 0 || pattern > 256) return INVALID_INPUT_PARAMETER;
+    if(pattern < 0 || pattern > 255) return INVALID_INPUT_PARAMETER;
+    if(length < 8 || length > 55) return INVALID_INPUT_PARAMETER;
 
     //If the pattern is chosen as 0, we are using the default Wolfram model: all cells states are 0, except for the middle one.
     if(pattern == 0)
@@ -141,16 +142,14 @@ int fillFirstGeneration (Cell **array, int pattern, int length)
     //Converts the rule numbers into an array of digits for easier comparison
     int binaryPattern[8];
 
-    for (int i=8; i>=1; i--)
+    for (int i=7; i>=0; i--)
     {
         binaryPattern[i] = binaryConversion % 10;
         binaryConversion = binaryConversion/10;
     }
-
-
     
     //Cells are filled with matching numbers.
-    for(int i=1, j=i; i<length-1; i++, j++)
+    for(int i=0, j=i; i<length; i++, j++)
     {
         if(j>8) j=j-8;
 
@@ -158,14 +157,6 @@ int fillFirstGeneration (Cell **array, int pattern, int length)
         array[i]->prevState = binaryPattern[j];
     
     }
-
-    //First and last cell are set to 0, as they are edges and won't be manipulated.
-    array[0]->state = 0;
-    array[0]->prevState = 0;
-
-    array[length]->state = 0;
-    array[length]->prevState = 0;
-
     return SUCCESS;
 
 }
@@ -265,15 +256,30 @@ Calculates the next generation of cells by examining the neighbours.
 int calculateNextGeneration (Cell **array, Rules *rules, int length)
 {
     if (array == NULL) return INVALID_INPUT_PARAMETER;
+    if(length < 8 || length > 55) return INVALID_INPUT_PARAMETER;
 
-    char newState;
+    char newState, number1,number2,number3;
 
-    for (int i=1; i<length-1; i++)
+    for (int i=0; i<length; i++)
     {
-        char number1 = array[i-1]->prevState + '0';
-        char number2 = array[i]->prevState + '0';
-        char number3 = array[i+1]->prevState+ '0';
-
+        if(i==0)
+        {
+            number1 = array[length-1]->prevState + '0';
+            number2 = array[i]->prevState + '0';
+            number3 = array[1]->prevState+ '0';
+        }
+        else if(i==length-1)
+        {
+            number1 = array[i-1]->prevState + '0';
+            number2 = array[i]->prevState + '0';
+            number3 = array[0]->prevState+ '0';
+        }
+        else
+        {
+            number1 = array[i-1]->prevState + '0';
+            number2 = array[i]->prevState + '0';
+            number3 = array[i+1]->prevState+ '0';
+        }
         char binaryPattern [] = {number1,number2,number3};
 
         newState = findValue(rules, binaryPattern);
@@ -281,8 +287,8 @@ int calculateNextGeneration (Cell **array, Rules *rules, int length)
         array[i]->state = newState;
         
     }
-
-    for(int i=1; i<length-1; i++)
+    
+    for(int i=0; i<length; i++)
     {
         array[i]->prevState = array[i]->state;
     }
@@ -292,34 +298,48 @@ int calculateNextGeneration (Cell **array, Rules *rules, int length)
 }
 
 
-
 /*
 Saves the current generation of cells to a file.
-@param *array - pointer to the generation to be saved
+@param *array - a pointer to the generation to be saved
 @param generationSize - a size of an array
 @param fileName[] - a file where the output is saved to
+@param count - a number to indicate whether the headline of Cellular Automaton should be printed
+@param gen - a number to display that  Wolfram's model was used
+@param rule - a number of a rule applied
 
 @return SUCCESS if successful/error code otherwise
 */
-int saveGenerationToFile (Cell **array, int generationSize, char fileName[] )
+int saveGenerationToFile (Cell **array, int generationSize, char fileName[], int count,int gen, int rule)
 {
-    if(array == NULL)
-        return INVALID_INPUT_PARAMETER;
-    
-    if(fileName == NULL || strlen(fileName) > 50 || strlen(fileName) == 0)
-        return INVALID_INPUT_PARAMETER;
-        
+    if(array == NULL) return INVALID_INPUT_PARAMETER;
+    if(generationSize < 8 || generationSize > 55) return INVALID_INPUT_PARAMETER;
+    if(fileName == NULL || strlen(fileName) > 50 || strlen(fileName) == 0) return INVALID_INPUT_PARAMETER;
+    if(count < 0 || count > 1) return INVALID_INPUT_PARAMETER;
+    if(rule < 0 || rule >  255)  return INVALID_INPUT_PARAMETER;
+    if(rule < 0 || rule >  255)  return INVALID_INPUT_PARAMETER;
+
     FILE *f;
     f = fopen(fileName, "a");
     if(f == NULL)
         return FILE_ERROR;
     
+    if(count == 1)
+    {
+        if(gen==0)
+            fprintf(f, "\nCellular Automaton. Wolfram's model RULE %d\n", rule);
+        else
+            fprintf(f, "\nCellular Automaton RULE %d\n", rule);
+    }
+    
     for(int i =0; i<generationSize; i++)
     {
-        fprintf(f,"%d ", array[i]->state); 
+        if(array[i]->state == 0) fprintf(f," . ");
+        else if(array[i]->state == 1) fprintf(f, " # ");
+        //fprintf(f,"%d ", array[i]->state); 
     }
     fprintf(f,"\n");
-    fclose(f);
+    if(fclose(f) != 0)
+		return FILE_ERROR;
     return SUCCESS;
 }
 
@@ -347,7 +367,8 @@ int readFromFile(char fileName[])
         printf("%s",t);
     }
 
-    fclose(f);
+    if(fclose(f) != 0)
+		return FILE_ERROR;
     return SUCCESS;
 }
 

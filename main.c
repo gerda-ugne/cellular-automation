@@ -17,6 +17,8 @@ void loadFile();
 
 int main()
 {
+    /*
+    
     Cell **cells = initializeArray(40);
     if(cells != NULL) printf ("Array intialized successfully!\n");
 
@@ -37,9 +39,9 @@ int main()
 
    free(rules);
    free(cells);
-
-   
-   //processUserChoices();
+    
+   */
+   processUserChoices();
     return 0;
 }
 
@@ -107,26 +109,37 @@ void createNewGeneration()
     printf("\n");
     
 
-
-    //Increase the original length by 2 as first and last cell are not manipulated for edge control
-    length=length+2;
-
     //creating a generation by using variables with their new values
     Cell **cells = initializeArray(length);
-    //fillFirstGeneration(cells,rule);
     Rules *rules = generateRuleValues(rule);
+    
 
-    fillFirstGeneration(cells, 0, length);
-    for(int i=0; i<num; i++)
+    fillFirstGeneration(cells,gen, length);
+    displayGeneration(cells, length);
+
+    //value 1 indicates to print the name of the pattern only once after 1st generation is initialised
+    saveGenerationToFile(cells,length,fileName,1,gen,rule);
+
+    for(int i=0; i<num-1; i++)
     {
         calculateNextGeneration(cells, rules, length);
-        saveGenerationToFile(cells,length,fileName);
+        saveGenerationToFile(cells,length,fileName,0,gen,rule);
         displayGeneration(cells,length);
     }
     printf("\n");
     printf("\n");
 
+
+    for(int i=0; i < length; i++)
+    {
+        free(cells[i]);
+        cells[i] = NULL;
+    }
+    
     free(cells);
+    cells = NULL;
+    
+    free(rules);
 
 }
 
@@ -145,7 +158,17 @@ void loadFile()
 
         result= readFromFile(fileName);
         if(result == FILE_ERROR)
-        printf("File with such name does not exist\n");
+        {
+            printf("File with such name does not exist\n");
+            printf("\n");
+            printf("1. Continue\n");
+            printf("0. Go back\n");
+            isIntValid(0,1,&result,"Enter your option: ");
+            if(result == 1)
+                result=0;
+            else
+                result=SUCCESS;
+        }
     }
     while(result != SUCCESS);
 }
@@ -156,9 +179,10 @@ Selects the size of a generation
 */
 void selectLengthOfGeneration(int *length)
 {
-    //10-100 are only theoretical boundaries, some further testings are needed to determine them
-    char text[]= "Please, choose a length of a generation (10-100): ";
-    isIntValid(10,100,length,text);
+    //8-55: starts from 8 since binary expression used is of length 8
+    //      finishes at 55 so that the pattern could fit in one line without going on another line 
+    char text[]= "Please, choose a length of a generation (8-55): ";
+    isIntValid(8,55,length,text);
     
 }
 
@@ -168,9 +192,8 @@ Selects a number of generations
 */
 void selectNumberOfGenerations(int *num)
 {
-    //1-200 are only theoretical boundaries, some further testings are needed to determine them
-    char text[] = "Please, choose a number of generations  (1-200): ";
-    isIntValid(1,200,num,text );
+    char text[] = "Please, choose a number of generations  (1-100): ";
+    isIntValid(1,100,num,text );
 }
  
 
