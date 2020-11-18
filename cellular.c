@@ -63,6 +63,51 @@ Cell ***intialize2DArray(int columns, int rows)
 }
 
 /*
+Frees the allocated memory for the 1D array
+@param c - double pointer to the array
+@param length - size of the array
+
+@return SUCCESS if no errors present
+*/
+int freeArray(Cell **c, int length)
+{
+    for (int i=0; i<length; i++)
+    {
+        free(c[i]);
+    }
+
+    free(c);
+    return SUCCESS;
+
+}
+
+/*
+Frees the allocated memory for the 2D array
+@param c - triple pointer to the array
+@param columns - size parameter for the array
+@param rows - size parameter for the array
+
+@return SUCCESS if no errors present
+*/
+int free2DArray (Cell*** c, int columns, int rows)
+{
+    for (int i=0; i<rows; i++)
+    { 
+        for(int j=0; j<columns; j++)
+        {
+            free(c[i][j]);
+        }
+
+        free(c[i]); 
+    }
+
+    free(c);
+    return SUCCESS;
+
+}
+
+
+/*
 Converts a decimal number into binary and returnts it.
 param @int - number to be converted
 @return - binary number
@@ -224,6 +269,25 @@ Rules *initializeRuleTable()
         r->map[i] = (Pattern*)malloc(sizeof(Pattern));
     }
     return r;
+}
+
+/*
+Frees the allocated memory for the rule map
+@param r - double pointer to the rules
+
+@return SUCCESS if no errors present
+*/
+int freeRules(Rules *r)
+{
+    for(int i=0;i<8;i++)
+    {
+        free(r->map[i]);
+    }
+
+    free(r->map);
+    free(r);
+    
+    return SUCCESS;
 }
 
 
