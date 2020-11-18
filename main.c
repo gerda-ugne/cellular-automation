@@ -14,9 +14,11 @@ void selectGenerationRule(int *number);
 void isIntValid( int min, int max, int *number, char text[]);
 char *getFileName();
 void loadFile();
+void startGameOfLife();
 
 int main()
 {
+    //For testing purposes
     /*Cell **cells = initializeArray(40);
 
     if(cells != NULL) printf ("Array intialized successfully!\n");
@@ -35,19 +37,16 @@ int main()
 
     }
 
-
-   free(rules);
-   free(cells);
-
     //Initialize 2D array
     Cell*** cells = intialize2DArray(30, 30);
-    gameOfLife(cells, 30,30,40);*/
+    gameOfLife(cells, 30,30,40);
+    */
     processUserChoices();
 
     return 0;
 }
 
-/**
+/*
 Processes user's choices
 */
 void processUserChoices()
@@ -58,12 +57,14 @@ void processUserChoices()
     while(userChoice != 0)
     {
         displayMenu();
-        isIntValid(0,2,&userChoice, text);
+        isIntValid(0,3,&userChoice, text);
 
         if(userChoice == 1)
             createNewGeneration();
         else if(userChoice == 2)
             loadFile();
+        else if(userChoice == 3)
+            startGameOfLife();
     }
 }
 
@@ -76,6 +77,7 @@ void displayMenu()
     printf("----------------------------MENU---------------------------\n");
     printf("1. Start a new 1-D Cellular Automaton\n");
     printf("2. Load previously saved Cellular Automaton from a text file\n");
+    printf("3. Start a new 2-D Cellular Automaton - Game of Life\n");
     printf("0. Exit\n");
     printf("------------------------------------------------------------\n");
 }
@@ -152,7 +154,7 @@ void loadFile()
         result= readFromFile(fileName);
         if(result == FILE_ERROR)
         {
-            printf("File with such name does not exist\n");
+            printf("File with such name was not found\n");
             printf("\n");
             printf("1. Continue\n");
             printf("0. Go back\n");
@@ -167,15 +169,34 @@ void loadFile()
 }
 
 /*
+Starts a 2D cellular atomaton - a Game of Life
+*/
+void startGameOfLife()
+{
+    int columns=0;
+    printf("1. ");
+    isIntValid(10,40,&columns,"Please, enter a number of columns and rows(10-40). It must be the same: ");
+    int rows=columns;
+
+    int loops=0;
+    printf("2. ");
+    isIntValid(5,100,&loops,"Please, enter a number of loops (5-100) ");
+
+    Cell*** cells = intialize2DArray(columns, rows);
+    gameOfLife(cells, columns,rows,loops);
+    free2DArray(cells, columns, rows);
+}
+
+/*
 Selects the size of a generation 
 @param *length - a pointer to length variable
 */
 void selectLengthOfGeneration(int *length)
 {
-    //8-55: starts from 8 since binary expression used is of length 8
-    //      finishes at 55 so that the pattern could fit in one line without going on another line 
-    char text[]= "Please, choose a length of a generation (8-55): ";
-    isIntValid(8,55,length,text);
+    //8-40: starts from 8 since binary expression used is of length 8
+    //      finishes at 40 so that the pattern could fit in one line without going on another line 
+    char text[]= "Please, choose a length of a generation (8-40): ";
+    isIntValid(8,40,length,text);
     
 }
 
@@ -268,7 +289,7 @@ char *getFileName(char name[],int size)
         else
         {
             while(getchar() != '\n');
-            printf("Invalid input. Enter a file name with up to 50 characters:");
+            printf("\nInvalid input.\n");
         }
     }while(j==0);
  return name;
