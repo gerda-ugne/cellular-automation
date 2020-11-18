@@ -468,9 +468,9 @@ Main method to simulate Conway's Game of Life.
 void gameOfLife(Cell*** cells, int columns, int rows, int loops)
 {
     //Fill the grid with random 0's and 1's
-    for (int i=1; i<columns-1; i++)
+    for (int i=1; i<rows-1; i++)
     {
-        for(int j=1; j<rows-1; j++)
+        for(int j=1; j<columns-1; j++)
         {
             //Set each cell's previous and current state
             cells[i][j]->state = rand()%2;
@@ -482,9 +482,9 @@ void gameOfLife(Cell*** cells, int columns, int rows, int loops)
     for(int i=0; i<loops; i++)
     {
         //For every cell in the game
-        for(int i=1; i<columns-1; i++)
+        for(int i=1; i<rows-1; i++)
         {
-            for(int j=1; j<rows-1; j++)
+            for(int j=1; j<columns-1; j++)
             {
                 calculateNeighboursForGame(cells,i,j);
                 cells[i][j]->state = gameOfLifeRules(cells, i, j);
@@ -511,9 +511,9 @@ void resetParameters(Cell ***p, int columns, int rows)
 {
            
     //For every cell in the game
-    for(int i=1; i<columns-1; i++)
+    for(int i=1; i<rows-1; i++)
     {
-            for(int j=1; j<rows-1; j++)
+            for(int j=1; j<columns-1; j++)
             {
               p[i][j]->neighbours = 0;
             }
@@ -521,9 +521,9 @@ void resetParameters(Cell ***p, int columns, int rows)
     }
 
     //Set previous state to match the current state
-        for (int i=1; i<columns-1; i++)
+        for (int i=1; i<rows-1; i++)
          {
-            for(int j=1; j<rows-1; j++)
+            for(int j=1; j<columns-1; j++)
             {
                 p[i][j]->prevState = p[i][j]->state;
             }
@@ -580,9 +580,9 @@ Displays the game of life generation to the terminal.
 void displayGameOfLife(Cell ***cells, int columns, int rows)
 {
 
-    for (int i=1; i<columns-1; i++)
+    for (int i=1; i<rows-1; i++)
     {
-        for(int j=1; j<rows-1; j++)
+        for(int j=1; j<columns-1; j++)
         {
             if(cells[i][j]->state == 0) printf(" . ");
             else if(cells[i][j]->state == 1) printf( " # ");

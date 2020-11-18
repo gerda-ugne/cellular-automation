@@ -18,29 +18,7 @@ void startGameOfLife();
 
 int main()
 {
-    //For testing purposes
-    /*Cell **cells = initializeArray(40);
 
-    if(cells != NULL) printf ("Array intialized successfully!\n");
-
-    if (fillFirstGeneration(cells,3,40) == SUCCESS)
-    {
-        printf("Generation filled successfully!\n");
-    }
-    displayGeneration(cells, 40);
-    Rules *rules = generateRuleValues(30);
-
-    for(int i=0; i<30; i++)
-    {
-        calculateNextGeneration(cells, rules,40);
-        displayGeneration(cells,40);
-
-    }
-
-    //Initialize 2D array
-    Cell*** cells = intialize2DArray(30, 30);
-    gameOfLife(cells, 30,30,40);
-    */
     processUserChoices();
 
     return 0;
@@ -175,15 +153,19 @@ void startGameOfLife()
 {
     int columns=0;
     printf("1. ");
-    isIntValid(10,40,&columns,"Please, enter a number of columns and rows(10-40). It must be the same: ");
-    int rows=columns;
+    isIntValid(10,40,&columns,"Please enter a number of columns (10-40): ");
+
+    int rows=0;
+    printf("3. ");
+    isIntValid(10,40,&rows, "Please enter a number of rows(10-40):" );
 
     int loops=0;
     printf("2. ");
-    isIntValid(5,100,&loops,"Please, enter a number of loops (5-100) ");
+    isIntValid(5,100,&loops,"Please enter a number of loops (5-100) ");
+
 
     Cell*** cells = intialize2DArray(columns, rows);
-    gameOfLife(cells, columns,rows,loops);
+    gameOfLife(cells, columns, rows,loops);
     free2DArray(cells, columns, rows);
 }
 
@@ -195,7 +177,7 @@ void selectLengthOfGeneration(int *length)
 {
     //8-40: starts from 8 since binary expression used is of length 8
     //      finishes at 40 so that the pattern could fit in one line without going on another line 
-    char text[]= "Please, choose a length of a generation (8-40): ";
+    char text[]= "Please choose a length of a generation (8-40): ";
     isIntValid(8,40,length,text);
     
 }
@@ -206,7 +188,7 @@ Selects a number of generations
 */
 void selectNumberOfGenerations(int *num)
 {
-    char text[] = "Please, choose a number of generations  (1-100): ";
+    char text[] = "Please choose a number of generations  (1-100): ";
     isIntValid(1,100,num,text );
 }
  
