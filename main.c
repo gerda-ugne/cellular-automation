@@ -41,8 +41,8 @@ int main()
 
     //Initialize 2D array
     Cell*** cells = intialize2DArray(30, 30);
-    gameOfLife(cells, 30,30,40);
-   //processUserChoices();
+    gameOfLife(cells, 30,30,40);*/
+    processUserChoices();
 
     return 0;
 }
@@ -131,17 +131,8 @@ void createNewGeneration()
     printf("\n");
     printf("\n");
 
-
-    for(int i=0; i < length; i++)
-    {
-        free(cells[i]);
-        cells[i] = NULL;
-    }
-    
-    free(cells);
-    cells = NULL;
-    
-    free(rules);
+    freeArray(cells, length);
+    freeRules(rules);
 
 }
 
@@ -282,3 +273,4 @@ char *getFileName(char name[],int size)
     }while(j==0);
  return name;
 }
+
