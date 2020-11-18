@@ -217,7 +217,7 @@ int fillFirstGeneration (Cell **array, int pattern, int length)
     //Cells are filled with matching numbers.
     for(int i=0, j=i; i<length; i++, j++)
     {
-        if(j>8) j=j-8;
+        if(j==8) j=j-8;
 
         array[i]->state = binaryPattern[j];
         array[i]->prevState = binaryPattern[j];
