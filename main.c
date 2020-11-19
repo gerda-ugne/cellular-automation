@@ -4,21 +4,42 @@
 #include "cellular.h"
 
 /* FUNCTIONS SUPPORTED IN THE MAIN CLASS*/
+
+/*Displays the menu*/
 void displayMenu();
+
+/* Processes user choices*/
 void processUserChoices();
+
+/*Creates a new process of Cellular Automation*/
 void createNewGeneration();
+
+/*Sets a new length for the generation*/
 void selectLengthOfGeneration(int *length);
+
+/*Sets the number of the generation*/
 void selectNumberOfGenerations(int *num);
+
+/*Sets a new length for the generation*/
 void selectFirstGeneration(int *gen);
+
+/*Selects the generation rule*/
 void selectGenerationRule(int *number);
+
+/*Checks whether the user input is valid*/
 void isIntValid( int min, int max, int *number, char text[]);
+
+/*Collects file name from the user*/
 char *getFileName();
+
+/*Loads and displays contents of a file to the terminal*/
 void loadFile();
+
+/*Launches game of life*/
 void startGameOfLife();
 
 int main()
 {
-
     processUserChoices();
 
     return 0;
