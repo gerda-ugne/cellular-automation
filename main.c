@@ -199,7 +199,7 @@ Selects a number for the first generation
 */
 void selectFirstGeneration(int *gen)
 {
-    char text[]="A binary expression of a number will be used as a starting point for a Cellular Automaton.\n Please enter a number (1-255), or enter 0 to use the standard Wolfram model.";
+    char text[]="To fill the first generation for the Cellular Automation, you can either choose the standard Wolfram model for expected patterns, or choose a number and have its repeated binary expression used as a the first generation.\n Please enter a number (1-255), or enter 0 to use the standard Wolfram model.";
     isIntValid(0,255,gen,text );
 }
 
